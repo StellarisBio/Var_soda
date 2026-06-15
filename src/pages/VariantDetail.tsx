@@ -177,7 +177,8 @@ export default function VariantDetail() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 mb-6 border-b border-gray-200 bg-slate-bg px-4 pb-4 pt-4 dark:border-gray-700 dark:bg-gray-900 lg:-mx-6 lg:px-6">
+        <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/variants')}
@@ -232,6 +233,7 @@ export default function VariantDetail() {
               {t('common.delete')}
             </button>
           )}
+        </div>
         </div>
       </div>
 
