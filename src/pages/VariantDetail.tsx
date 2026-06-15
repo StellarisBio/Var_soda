@@ -175,11 +175,10 @@ export default function VariantDetail() {
   const canEdit = user?.role === 'admin' || user?.id === variant.created_by;
 
   return (
-    <div className="flex flex-col">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-30 -mx-4 -mt-4 bg-slate-bg lg:-mx-6 lg:-mt-6 dark:bg-gray-900">
-        <div className="border-b border-gray-200 px-4 pt-4 pb-3 lg:px-6 lg:pt-6 dark:border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-slate-bg px-4 pt-4 pb-3 lg:-mx-6 lg:-mt-6 lg:px-6 lg:pt-6 dark:bg-gray-900">
+      <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/variants')}
@@ -235,12 +234,9 @@ export default function VariantDetail() {
             </button>
           )}
         </div>
-        </div>
       </div>
       </div>
 
-      {/* Content */}
-      <div className="space-y-6 pt-6">
       {/* Basic Info */}
       <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
         <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.basicInfo')}</h2>
@@ -486,8 +482,6 @@ export default function VariantDetail() {
             </div>
           )}
         </div>
-      </div>
-
       </div>
 
       {/* Delete Confirm Modal */}
