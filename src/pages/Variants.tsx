@@ -234,10 +234,10 @@ export default function Variants() {
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chromosome')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.position')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
@@ -266,10 +266,10 @@ export default function Variants() {
                       {v.gene}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.chromosome}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{Number(v.position)}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       (v.genome_build || 'GRCh38') === 'GRCh38'
