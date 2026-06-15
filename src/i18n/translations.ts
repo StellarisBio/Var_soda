@@ -1,0 +1,318 @@
+export type Lang = 'zh' | 'en'
+
+const translations = {
+  // 通用
+  common: {
+    appName: { zh: 'WES变体数据库', en: 'WES Variant Database' },
+    appNameShort: { zh: 'WESDB', en: 'WESDB' },
+    loading: { zh: '加载中...', en: 'Loading...' },
+    save: { zh: '保存', en: 'Save' },
+    saving: { zh: '保存中...', en: 'Saving...' },
+    cancel: { zh: '取消', en: 'Cancel' },
+    delete: { zh: '删除', en: 'Delete' },
+    edit: { zh: '编辑', en: 'Edit' },
+    search: { zh: '搜索', en: 'Search' },
+    submit: { zh: '提交', en: 'Submit' },
+    noData: { zh: '暂无数据', en: 'No data available' },
+    confirm: { zh: '确认', en: 'Confirm' },
+    back: { zh: '返回', en: 'Back' },
+    actions: { zh: '操作', en: 'Actions' },
+    date: { zh: '日期', en: 'Date' },
+    status: { zh: '状态', en: 'Status' },
+    notes: { zh: '备注', en: 'Notes' },
+    createdBy: { zh: '创建者', en: 'Created By' },
+    logout: { zh: '退出登录', en: 'Logout' },
+    language: { zh: '语言', en: 'Language' },
+    darkMode: { zh: '深色模式', en: 'Dark Mode' },
+    lightMode: { zh: '浅色模式', en: 'Light Mode' },
+  },
+
+  // 导航
+  nav: {
+    dashboard: { zh: '仪表盘', en: 'Dashboard' },
+    variants: { zh: '变体列表', en: 'Variants' },
+    liftover: { zh: 'Liftover', en: 'Liftover' },
+    users: { zh: '用户管理', en: 'Users' },
+  },
+
+  // 登录/注册
+  auth: {
+    signIn: { zh: '登录', en: 'Sign In' },
+    signingIn: { zh: '登录中...', en: 'Signing in...' },
+    register: { zh: '注册', en: 'Register' },
+    creatingAccount: { zh: '注册中...', en: 'Creating account...' },
+    email: { zh: '邮箱', en: 'Email' },
+    password: { zh: '密码', en: 'Password' },
+    confirmPassword: { zh: '确认密码', en: 'Confirm Password' },
+    fullName: { zh: '姓名', en: 'Full Name' },
+    institution: { zh: '机构', en: 'Institution' },
+    emailPlaceholder: { zh: 'you@institution.org', en: 'you@institution.org' },
+    passwordPlaceholder: { zh: '请输入密码', en: 'Enter your password' },
+    namePlaceholder: { zh: '张三', en: 'Dr. Jane Smith' },
+    institutionPlaceholder: { zh: '医院/实验室名称', en: 'Hospital / Lab name' },
+    minPassword: { zh: '密码至少6个字符', en: 'Password must be at least 6 characters' },
+    passwordMismatch: { zh: '两次密码不一致', en: 'Passwords do not match' },
+    noAccount: { zh: '没有账号？', en: "Don't have an account?" },
+    hasAccount: { zh: '已有账号？', en: 'Already have an account?' },
+    goToRegister: { zh: '去注册', en: 'Register' },
+    goToLogin: { zh: '去登录', en: 'Sign In' },
+    subtitle: { zh: '全外显子组测序变体数据库', en: 'Whole Exome Sequencing Variant Database' },
+    createAccount: { zh: '创建账号', en: 'Create Account' },
+    createSubtitle: { zh: '创建您的账号', en: 'Create your account' },
+    emailRequired: { zh: '邮箱、密码和姓名为必填项', en: 'Email, password and name are required' },
+    forgotPassword: { zh: '忘记密码？', en: 'Forgot password?' },
+    resetPassword: { zh: '重置密码', en: 'Reset Password' },
+    resetPasswordTitle: { zh: '重置密码', en: 'Reset Password' },
+    newPassword: { zh: '新密码', en: 'New Password' },
+    confirmNewPassword: { zh: '确认新密码', en: 'Confirm New Password' },
+    newPasswordPlaceholder: { zh: '请输入新密码', en: 'Enter new password' },
+    confirmNewPasswordPlaceholder: { zh: '再次输入新密码', en: 'Re-enter new password' },
+    resetting: { zh: '重置中...', en: 'Resetting...' },
+    resetSuccess: { zh: '密码重置成功，请使用新密码登录', en: 'Password reset successfully, please sign in with new password' },
+    resetFailed: { zh: '重置失败，请检查邮箱是否正确', en: 'Reset failed, please check your email' },
+    backToLogin: { zh: '返回登录', en: 'Back to login' },
+    showPassword: { zh: '显示密码', en: 'Show password' },
+    hidePassword: { zh: '隐藏密码', en: 'Hide password' },
+    verificationCode: { zh: '验证码', en: 'Verification Code' },
+    verificationCodePlaceholder: { zh: '请输入6位验证码', en: 'Enter 6-digit code' },
+    sendCode: { zh: '发送验证码', en: 'Send Code' },
+    resendCode: { zh: '重新发送', en: 'Resend' },
+    codeSent: { zh: '验证码已发送', en: 'Code sent' },
+    codeSentTo: { zh: '验证码已发送至', en: 'Code sent to' },
+    codeSendFailed: { zh: '验证码发送失败', en: 'Failed to send code' },
+    codeInvalid: { zh: '验证码无效或已过期', en: 'Invalid or expired code' },
+    codeRequired: { zh: '请输入验证码', en: 'Verification code is required' },
+    pleaseEnterEmail: { zh: '请先输入邮箱', en: 'Please enter email first' },
+    pleaseEnterPhone: { zh: '请先输入手机号', en: 'Please enter phone number first' },
+    phone: { zh: '手机号', en: 'Phone' },
+    phonePlaceholder: { zh: '请输入手机号', en: 'Enter phone number' },
+    phoneInvalid: { zh: '手机号格式不正确', en: 'Invalid phone number format' },
+    loginByEmail: { zh: '邮箱登录', en: 'Email Login' },
+    loginByPhone: { zh: '手机号登录', en: 'Phone Login' },
+    registerByEmail: { zh: '邮箱注册', en: 'Email Register' },
+    registerByPhone: { zh: '手机号注册', en: 'Phone Register' },
+    phoneOrEmailRequired: { zh: '请输入邮箱或手机号', en: 'Email or phone is required' },
+    resetPasswordDesc: { zh: '请输入您的邮箱、验证码和新密码', en: 'Enter your email, verification code and new password' },
+    resetPasswordDescPhone: { zh: '请输入您的手机号、验证码和新密码', en: 'Enter your phone number, verification code and new password' },
+    resetByPhone: { zh: '手机号重置', en: 'Reset by Phone' },
+    resetByEmail: { zh: '邮箱重置', en: 'Reset by Email' },
+    secondsLater: { zh: '秒后重试', en: 's' },
+  },
+
+  // 个人资料
+  profile: {
+    title: { zh: '个人资料', en: 'Profile' },
+    basicInfo: { zh: '基本信息', en: 'Basic Info' },
+    changePassword: { zh: '修改密码', en: 'Change Password' },
+    name: { zh: '姓名', en: 'Name' },
+    email: { zh: '邮箱', en: 'Email' },
+    institution: { zh: '机构', en: 'Institution' },
+    role: { zh: '角色', en: 'Role' },
+    currentPassword: { zh: '当前密码', en: 'Current Password' },
+    newPassword: { zh: '新密码', en: 'New Password' },
+    confirmNewPassword: { zh: '确认新密码', en: 'Confirm New password' },
+    currentPasswordPlaceholder: { zh: '请输入当前密码', en: 'Enter current password' },
+    newPasswordPlaceholder: { zh: '请输入新密码', en: 'Enter new password' },
+    confirmNewPasswordPlaceholder: { zh: '再次输入新密码', en: 'Re-enter new password' },
+    saveProfile: { zh: '保存资料', en: 'Save Profile' },
+    saving: { zh: '保存中...', en: 'Saving...' },
+    changePasswordBtn: { zh: '修改密码', en: 'Change Password' },
+    changing: { zh: '修改中...', en: 'Changing...' },
+    profileSaved: { zh: '资料已更新', en: 'Profile updated' },
+    passwordChanged: { zh: '密码已修改，请重新登录', en: 'Password changed, please sign in again' },
+    currentPasswordWrong: { zh: '当前密码错误', en: 'Current password is incorrect' },
+    passwordMismatch: { zh: '两次密码不一致', en: 'Passwords do not match' },
+    nameRequired: { zh: '姓名不能为空', en: 'Name is required' },
+    avatar: { zh: '头像', en: 'Avatar' },
+    changeAvatar: { zh: '更换头像', en: 'Change Avatar' },
+    uploadAvatar: { zh: '上传头像', en: 'Upload Avatar' },
+    avatarUploaded: { zh: '头像已更新', en: 'Avatar updated' },
+    avatarUploadFailed: { zh: '头像上传失败', en: 'Avatar upload failed' },
+    avatarHint: { zh: '支持 JPG、PNG、GIF、WebP，最大 2MB', en: 'JPG, PNG, GIF, WebP, max 2MB' },
+  },
+
+  // 仪表盘
+  dashboard: {
+    title: { zh: '仪表盘', en: 'Dashboard' },
+    totalVariants: { zh: '变体总数', en: 'Total Variants' },
+    monthlyNew: { zh: '本月新增', en: 'Monthly New' },
+    pendingReview: { zh: '待审核', en: 'Pending Review' },
+    pathogenic: { zh: '致病性', en: 'Pathogenic' },
+    acmgDistribution: { zh: 'ACMG分类分布', en: 'ACMG Classification Distribution' },
+    pendingReviewTitle: { zh: '待审核变体', en: 'Pending Review' },
+    recentVariants: { zh: '最近变体', en: 'Recent Variants' },
+    noPending: { zh: '没有待审核变体', en: 'No pending variants' },
+    noVariants: { zh: '暂无变体', en: 'No variants found' },
+  },
+
+  // 变体列表
+  variants: {
+    title: { zh: '变体列表', en: 'Variants' },
+    newVariant: { zh: '新建变体', en: 'New Variant' },
+    searchPlaceholder: { zh: '按基因、cDNA、蛋白质变化搜索...', en: 'Search by gene, cDNA, protein change...' },
+    allAcmg: { zh: '所有ACMG分类', en: 'All ACMG Classes' },
+    allStatus: { zh: '所有状态', en: 'All Statuses' },
+    filterByGene: { zh: '按基因筛选', en: 'Filter by gene' },
+    gene: { zh: '基因', en: 'Gene' },
+    cdna: { zh: 'cDNA', en: 'cDNA' },
+    protein: { zh: '蛋白质', en: 'Protein' },
+    chrPos: { zh: '染色体:位置', en: 'Chr:Pos' },
+    genomeBuild: { zh: '基因组版本', en: 'Genome Build' },
+    acmg: { zh: 'ACMG', en: 'ACMG' },
+    showing: { zh: '显示', en: 'Showing' },
+    of: { zh: '共', en: 'of' },
+    page: { zh: '第', en: 'Page' },
+    pageOf: { zh: '页，共', en: 'of' },
+    pages: { zh: '页', en: 'pages' },
+    batchImport: { zh: '批量导入', en: 'Batch Import' },
+    importTitle: { zh: '批量导入变体', en: 'Batch Import Variants' },
+    importHint: { zh: '请上传 CSV 文件，必填列：chromosome, position, ref_allele, alt_allele, gene, acmg_class', en: 'Upload a CSV file. Required columns: chromosome, position, ref_allele, alt_allele, gene, acmg_class' },
+    importOptionalCols: { zh: '可选列：transcript, cdna_change, protein_change, genome_build, notes', en: 'Optional columns: transcript, cdna_change, protein_change, genome_build, notes' },
+    selectFile: { zh: '选择文件', en: 'Select File' },
+    dragDrop: { zh: '拖拽 CSV 文件到此处，或点击选择', en: 'Drag & drop CSV file here, or click to select' },
+    importing: { zh: '导入中...', en: 'Importing...' },
+    importBtn: { zh: '开始导入', en: 'Start Import' },
+    importSuccess: { zh: '导入完成', en: 'Import Complete' },
+    importResult: { zh: '共 {total} 条，成功 {imported} 条，跳过 {skipped} 条', en: '{total} total, {imported} imported, {skipped} skipped' },
+    importErrors: { zh: '错误详情', en: 'Error Details' },
+    downloadTemplate: { zh: '下载模板', en: 'Download Template' },
+    templateHint: { zh: '下载 CSV 模板文件查看格式要求', en: 'Download CSV template to see format requirements' },
+  },
+
+  // 变体详情
+  variantDetail: {
+    basicInfo: { zh: '基本信息', en: 'Basic Information' },
+    chromosome: { zh: '染色体', en: 'Chromosome' },
+    position: { zh: '位置', en: 'Position' },
+    refAllele: { zh: '参考等位基因', en: 'Ref Allele' },
+    altAllele: { zh: '变异等位基因', en: 'Alt Allele' },
+    gene: { zh: '基因', en: 'Gene' },
+    transcript: { zh: '转录本', en: 'Transcript' },
+    cdnaChange: { zh: 'cDNA变化', en: 'cDNA Change' },
+    proteinChange: { zh: '蛋白质变化', en: 'Protein Change' },
+    genomeBuild: { zh: '基因组版本', en: 'Genome Build' },
+    acmgClassification: { zh: 'ACMG分类', en: 'ACMG Classification' },
+    acmgEvidence: { zh: 'ACMG证据', en: 'ACMG Evidence' },
+    reviews: { zh: '审核记录', en: 'Reviews' },
+    history: { zh: '操作历史', en: 'History' },
+    submitReview: { zh: '提交审核', en: 'Submit Review' },
+    approve: { zh: '通过', en: 'Approve' },
+    reject: { zh: '拒绝', en: 'Reject' },
+    addComment: { zh: '添加审核意见...', en: 'Add review comment...' },
+    submitting: { zh: '提交中...', en: 'Submitting...' },
+    noReviews: { zh: '暂无审核记录', en: 'No reviews yet' },
+    noHistory: { zh: '暂无操作记录', en: 'No history records' },
+    deleteConfirm: { zh: '确定要删除此变体吗？', en: 'Are you sure you want to delete this variant?' },
+    descriptionPlaceholder: { zh: '描述...', en: 'Description...' },
+    // ACMG 证据分类
+    pathogenicVeryStrong: { zh: '致病性 非常强', en: 'Pathogenic Very Strong' },
+    pathogenicStrong: { zh: '致病性 强', en: 'Pathogenic Strong' },
+    pathogenicModerate: { zh: '致病性 中等', en: 'Pathogenic Moderate' },
+    pathogenicSupporting: { zh: '致病性 支持', en: 'Pathogenic Supporting' },
+    benignStandalone: { zh: '良性 独立', en: 'Benign Stand-alone' },
+    benignStrong: { zh: '良性 强', en: 'Benign Strong' },
+    benignSupporting: { zh: '良性 支持', en: 'Benign Supporting' },
+  },
+
+  // 新建变体
+  variantNew: {
+    title: { zh: '新建变体', en: 'New Variant' },
+    createVariant: { zh: '创建变体', en: 'Create Variant' },
+    creating: { zh: '创建中...', en: 'Creating...' },
+    requiredFields: { zh: '请填写所有必填字段（基因、染色体、参考等位基因、变异等位基因）', en: 'Please fill in all required fields (Gene, Chromosome, Ref Allele, Alt Allele)' },
+    chromosomePlaceholder: { zh: '例如 17', en: 'e.g. 17' },
+    positionPlaceholder: { zh: '基因组位置', en: 'Genomic position' },
+    refAllelePlaceholder: { zh: 'A', en: 'A' },
+    altAllelePlaceholder: { zh: 'T', en: 'T' },
+    genePlaceholder: { zh: 'BRCA1', en: 'BRCA1' },
+    transcriptPlaceholder: { zh: 'NM_007294.3', en: 'NM_007294.3' },
+    cdnaPlaceholder: { zh: 'c.5266dupC', en: 'c.5266dupC' },
+    proteinPlaceholder: { zh: 'p.Gln1756Profs', en: 'p.Gln1756Profs' },
+    notesPlaceholder: { zh: '补充说明...', en: 'Additional notes...' },
+  },
+
+  // 用户管理
+  users: {
+    title: { zh: '用户管理', en: 'User Management' },
+    adminOnly: { zh: '仅管理员', en: 'Admin Only' },
+    name: { zh: '姓名', en: 'Name' },
+    email: { zh: '邮箱', en: 'Email' },
+    institution: { zh: '机构', en: 'Institution' },
+    role: { zh: '角色', en: 'Role' },
+    status: { zh: '状态', en: 'Status' },
+    active: { zh: '已激活', en: 'Active' },
+    inactive: { zh: '已禁用', en: 'Inactive' },
+    activate: { zh: '启用', en: 'Activate' },
+    deactivate: { zh: '禁用', en: 'Deactivate' },
+    noUsers: { zh: '暂无用户', en: 'No users found' },
+  },
+
+  // 状态标签
+  statusBadge: {
+    pending: { zh: '待审核', en: 'Pending' },
+    approved: { zh: '已通过', en: 'Approved' },
+    rejected: { zh: '已拒绝', en: 'Rejected' },
+  },
+
+  // 角色
+  roles: {
+    admin: { zh: '管理员', en: 'Admin' },
+    reviewer: { zh: '审核员', en: 'Reviewer' },
+    analyst: { zh: '分析员', en: 'Analyst' },
+  },
+
+  // Liftover
+  liftover: {
+    title: { zh: 'Liftover 坐标转换', en: 'Liftover Coordinate Conversion' },
+    description: { zh: '将变体坐标在不同参考基因组版本之间进行转换（如 GRCh37/hg19 ↔ GRCh38/hg38）', en: 'Convert variant coordinates between different reference genome builds (e.g., GRCh37/hg19 ↔ GRCh38/hg38)' },
+    poweredBy: { zh: '由 GeneBe API 提供支持', en: 'Powered by GeneBe API' },
+    inputVariant: { zh: '输入变体', en: 'Input Variant' },
+    sourceGenome: { zh: '源基因组版本', en: 'Source Genome' },
+    targetGenome: { zh: '目标基因组版本', en: 'Target Genome' },
+    swap: { zh: '交换源和目标', en: 'Swap source and target' },
+    chromosome: { zh: '染色体', en: 'Chromosome' },
+    position: { zh: '位置', en: 'Position' },
+    refAllele: { zh: '参考等位基因', en: 'Ref Allele' },
+    altAllele: { zh: '变异等位基因', en: 'Alt Allele' },
+    convert: { zh: '开始转换', en: 'Convert' },
+    converting: { zh: '转换中...', en: 'Converting...' },
+    result: { zh: '转换结果', en: 'Result' },
+    success: { zh: '转换成功', en: 'Conversion successful' },
+    failed: { zh: '转换失败', en: 'Conversion failed' },
+    noResult: { zh: '未找到转换结果，该位置可能无法映射到目标基因组', en: 'No result found. This position may not map to the target genome.' },
+    requiredFields: { zh: '请填写所有必填字段（染色体、位置、参考等位基因、变异等位基因）', en: 'Please fill in all required fields (Chromosome, Position, Ref Allele, Alt Allele)' },
+    sameGenome: { zh: '源基因组版本和目标基因组版本不能相同', en: 'Source and target genome builds must be different' },
+    copy: { zh: '复制', en: 'Copy' },
+    copied: { zh: '已复制', en: 'Copied' },
+    additionalInfo: { zh: '附加信息', en: 'Additional Info' },
+    history: { zh: '查询历史', en: 'Query History' },
+    clearHistory: { zh: '清空历史', en: 'Clear History' },
+    restore: { zh: '重新查询', en: 'Re-query' },
+    clearInput: { zh: '清空', en: 'Clear' },
+    pasteInput: { zh: '快速粘贴', en: 'Quick Paste' },
+    pastePlaceholder: { zh: '粘贴变体，如 chr22:50523267:C:T', en: 'Paste variant, e.g. chr22:50523267:C:T' },
+    pasteHint: { zh: '支持格式：chr22:50523267:C:T、22:50523267:C:T、chr22-50523267-C-T 等', en: 'Formats: chr22:50523267:C:T, 22:50523267:C:T, chr22-50523267-C-T, etc.' },
+  },
+} as const
+
+type TranslationKey = string
+
+function getNestedValue(obj: any, key: string): string | undefined {
+  const keys = key.split('.')
+  let current = obj
+  for (const k of keys) {
+    if (current[k] === undefined) return undefined
+    current = current[k]
+  }
+  return current
+}
+
+export function t(key: TranslationKey, lang: Lang): string {
+  const value = getNestedValue(translations, key)
+  if (value && typeof value === 'object') {
+    return (value as any)[lang] || (value as any)['en'] || key
+  }
+  return key
+}
+
+export type { translations }

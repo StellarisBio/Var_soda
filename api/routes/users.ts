@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express'
-import db from '../database.js'
+import { getDb } from '../database.js'
 import { authenticate } from '../middleware/auth.js'
 
 const router = Router()
@@ -9,6 +9,7 @@ const router = Router()
  */
 router.get('/', authenticate, (req: Request, res: Response): void => {
   try {
+    const db = getDb()
     if (req.user!.role !== 'admin') {
       res.status(403).json({ success: false, error: '仅管理员可查看用户列表' })
       return
@@ -27,6 +28,7 @@ router.get('/', authenticate, (req: Request, res: Response): void => {
  */
 router.put('/:id', authenticate, (req: Request, res: Response): void => {
   try {
+    const db = getDb()
     if (req.user!.role !== 'admin') {
       res.status(403).json({ success: false, error: '仅管理员可修改用户信息' })
       return

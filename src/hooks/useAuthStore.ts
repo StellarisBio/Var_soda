@@ -8,7 +8,8 @@ interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: { email: string; password: string; name: string; institution?: string }) => Promise<void>;
+  loginByPhone: (phone: string, verificationCode: string) => Promise<void>;
+  register: (data: { email?: string; phone?: string; password: string; name: string; institution?: string; verificationCode: string; verificationType: 'email' | 'phone' }) => Promise<void>;
   logout: () => void;
   loadUser: () => Promise<void>;
 }
@@ -21,6 +22,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (email, password) => {
     const res = await api.login(email, password);
+    localStorage.setItem('token', res.data.token);
+    set({ user: res.data.user, token: res.data.token, isAuthenticated: true });
+  },
+
+  loginByPhone: async (phone, verificationCode) => {
+    const res = await api.loginByPhone(phone, verificationCode);
     localStorage.setItem('token', res.data.token);
     set({ user: res.data.user, token: res.data.token, isAuthenticated: true });
   },

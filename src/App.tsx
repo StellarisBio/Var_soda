@@ -10,6 +10,8 @@ import Variants from '@/pages/Variants';
 import VariantDetail from '@/pages/VariantDetail';
 import VariantNew from '@/pages/VariantNew';
 import Users from '@/pages/Users';
+import Profile from '@/pages/Profile';
+import Liftover from '@/pages/Liftover';
 
 export default function App() {
   const { isAuthenticated, loadUser } = useAuthStore();
@@ -45,6 +47,8 @@ export default function App() {
           <Route path="/variants" element={<Variants />} />
           <Route path="/variants/new" element={<VariantNew />} />
           <Route path="/variants/:id" element={<VariantDetail />} />
+          <Route path="/liftover" element={<Liftover />} />
+          <Route path="/profile" element={<Profile />} />
           <Route
             path="/users"
             element={

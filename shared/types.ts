@@ -4,6 +4,7 @@ export interface User {
   name: string;
   institution?: string;
   role: 'admin' | 'reviewer' | 'analyst';
+  avatar?: string;
   is_active: number; // SQLite INTEGER 0/1
   created_at: string;
   updated_at: string;
@@ -20,6 +21,7 @@ export interface Variant {
   cdna_change: string;
   protein_change: string;
   acmg_class: 'Pathogenic' | 'Likely Pathogenic' | 'VUS' | 'Likely Benign' | 'Benign';
+  genome_build: 'GRCh37' | 'GRCh38';
   notes?: string;
   status: 'pending' | 'approved' | 'rejected';
   created_by: number;

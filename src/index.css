@@ -17,3 +17,7 @@
 body {
   background-color: #F0F4F8;
 }
+
+.dark body {
+  background-color: #111827;
+}

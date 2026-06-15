@@ -21,6 +21,17 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers,
   });
 
+  if (res.status === 401) {
+    // token 过期或无效，清除登录状态并跳转到登录页
+    localStorage.removeItem('token');
+    // 只在非登录页才跳转，避免循环
+    if (!window.location.pathname.includes('/login')) {
+      window.location.href = '/login';
+    }
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || '登录已过期，请重新登录');
+  }
+
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new Error(data.error || data.message || `Request failed: ${res.status}`);
@@ -37,11 +48,21 @@ export async function login(email: string, password: string): Promise<{ success:
   });
 }
 
+export async function loginByPhone(phone: string, verificationCode: string): Promise<{ success: boolean; data: { token: string; user: User } }> {
+  return request('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ loginType: 'phone', phone, verificationCode }),
+  });
+}
+
 export async function register(data: {
-  email: string;
+  email?: string;
+  phone?: string;
   password: string;
   name: string;
   institution?: string;
+  verificationCode: string;
+  verificationType: 'email' | 'phone';
 }): Promise<{ success: boolean; data: { token: string; user: User } }> {
   return request('/auth/register', {
     method: 'POST',
@@ -53,6 +74,58 @@ export async function getMe(): Promise<{ success: boolean; data: User }> {
   return request('/auth/me');
 }
 
+export async function updateProfile(data: { name: string; institution?: string }): Promise<{ success: boolean; data: User }> {
+  return request('/auth/profile', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function changePassword(data: { currentPassword: string; newPassword: string }): Promise<{ success: boolean; message: string }> {
+  return request('/auth/change-password', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function uploadAvatar(file: File): Promise<{ success: boolean; data: { avatar: string; user: User } }> {
+  const formData = new FormData();
+  formData.append('avatar', file);
+  const token = getToken();
+  const res = await fetch(`${BASE_URL}/auth/avatar`, {
+    method: 'POST',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || data.message || `Upload failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function resetPassword(data: {
+  target: string;
+  type: 'email' | 'phone';
+  newPassword: string;
+  verificationCode: string;
+}): Promise<{ success: boolean; message: string }> {
+  return request('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// Verification
+export async function sendVerificationCode(target: string, type: 'email' | 'phone', purpose: 'register' | 'reset_password' | 'login'): Promise<{ success: boolean; message: string; devCode?: string }> {
+  return request('/verification/send', {
+    method: 'POST',
+    body: JSON.stringify({ target, type, purpose }),
+  });
+}
+
 // Variants
 export async function getVariants(params?: {
   page?: number;
@@ -61,6 +134,7 @@ export async function getVariants(params?: {
   acmgClass?: string;
   status?: string;
   gene?: string;
+  genomeBuild?: string;
 }): Promise<{ success: boolean; data: { total: number; page: number; pageSize: number; data: Variant[] } }> {
   const query = new URLSearchParams();
   if (params) {
@@ -88,6 +162,7 @@ export async function createVariant(data: {
   cdna_change: string;
   protein_change: string;
   acmg_class: string;
+  genome_build?: string;
   notes?: string;
   evidences: EvidenceInput[];
 }): Promise<{ success: boolean; data: Variant }> {
@@ -109,6 +184,7 @@ export async function updateVariant(
     cdna_change?: string;
     protein_change?: string;
     acmg_class?: string;
+    genome_build?: string;
     notes?: string;
     evidences?: EvidenceInput[];
   }
@@ -131,6 +207,27 @@ export async function reviewVariant(
     method: 'POST',
     body: JSON.stringify(data),
   });
+}
+
+export async function importVariants(file: File): Promise<{
+  success: boolean;
+  data: { imported: number; skipped: number; total: number; errors: { row: number; reason: string }[] }
+}> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const token = getToken();
+  const res = await fetch(`${BASE_URL}/variants/import`, {
+    method: 'POST',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || data.message || `Import failed: ${res.status}`);
+  }
+  return res.json();
 }
 
 // Users

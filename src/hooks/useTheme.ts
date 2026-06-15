@@ -1,29 +1,46 @@
-import { useState, useEffect } from 'react';
+import { create } from 'zustand'
 
-type Theme = 'light' | 'dark';
+type Theme = 'light' | 'dark'
 
-export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) {
-      return savedTheme;
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+interface ThemeState {
+  theme: Theme
+  toggleTheme: () => void
+  setTheme: (theme: Theme) => void
+}
 
-  useEffect(() => {
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+export const useTheme = create<ThemeState>((set) => {
+  // 从 localStorage 读取，或跟随系统偏好
+  const saved = localStorage.getItem('theme') as Theme | null
+  const initial: Theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
 
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
+  // 初始化时立即应用
+  if (initial === 'dark') {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
 
   return {
-    theme,
-    toggleTheme,
-    isDark: theme === 'dark'
-  };
-} 
+    theme: initial,
+    toggleTheme: () =>
+      set((state) => {
+        const next = state.theme === 'light' ? 'dark' : 'light'
+        localStorage.setItem('theme', next)
+        if (next === 'dark') {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+        return { theme: next }
+      }),
+    setTheme: (theme: Theme) => {
+      localStorage.setItem('theme', theme)
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+      set({ theme })
+    },
+  }
+})

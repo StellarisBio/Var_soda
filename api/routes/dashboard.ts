@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express'
-import db from '../database.js'
+import { getDb } from '../database.js'
 import { authenticate } from '../middleware/auth.js'
 import type { DashboardStats } from '../../shared/types.js'
 
@@ -10,6 +10,7 @@ const router = Router()
  */
 router.get('/stats', authenticate, (req: Request, res: Response): void => {
   try {
+    const db = getDb()
     const totalVariants = (db.prepare('SELECT COUNT(*) as count FROM variants').get() as any).count
 
     const monthlyNew = (db.prepare(
