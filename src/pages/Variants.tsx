@@ -134,75 +134,76 @@ export default function Variants() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('variants.title')}</h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={openImportModal}
-            className="inline-flex items-center gap-2 rounded-lg border border-cyan bg-white px-4 py-2 text-sm font-semibold text-cyan transition-colors hover:bg-cyan-50 dark:bg-gray-800 dark:text-cyan-400 dark:border-cyan-800 dark:hover:bg-gray-700"
-          >
-            <Upload size={16} />
-            {t('variants.batchImport')}
-          </button>
-          <Link
-            to="/variants/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-cyan-600"
-          >
-            <Plus size={16} />
-            {t('variants.newVariant')}
-          </Link>
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-slate-bg px-4 pt-4 pb-2 lg:-mx-6 lg:-mt-6 lg:px-6 lg:pt-6 dark:bg-gray-900">
+        <div className="flex items-center justify-between">
+          <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('variants.title')}</h1>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openImportModal}
+              className="inline-flex items-center gap-2 rounded-lg border border-cyan bg-white px-4 py-2 text-sm font-semibold text-cyan transition-colors hover:bg-cyan-50 dark:bg-gray-800 dark:text-cyan-400 dark:border-cyan-800 dark:hover:bg-gray-700"
+            >
+              <Upload size={16} />
+              {t('variants.batchImport')}
+            </button>
+            <Link
+              to="/variants/new"
+              className="inline-flex items-center gap-2 rounded-lg bg-cyan px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-cyan-600"
+            >
+              <Plus size={16} />
+              {t('variants.newVariant')}
+            </Link>
+          </div>
         </div>
-      </div>
 
-      {/* Search bar */}
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('variants.searchPlaceholder')}
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
-          />
-        </div>
-        <button
-          type="submit"
-          className="rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500"
-        >
-          {t('common.search')}
-        </button>
-      </form>
+        {/* Search bar */}
+        <form onSubmit={handleSearch} className="mt-6 flex gap-2">
+          <div className="relative flex-1">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('variants.searchPlaceholder')}
+              className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+            />
+          </div>
+          <button
+            type="submit"
+            className="rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500"
+          >
+            {t('common.search')}
+          </button>
+        </form>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* GRCh38/GRCh37 切换 */}
-        <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
-          <button
-            onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh38' ? '' : 'GRCh38'); setPage(1); }}
-            className={`px-3 py-2 text-xs font-semibold transition-colors ${
-              genomeBuildFilter === 'GRCh38'
-                ? 'bg-cyan text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            GRCh38
-          </button>
-          <button
-            onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh37' ? '' : 'GRCh37'); setPage(1); }}
-            className={`px-3 py-2 text-xs font-semibold transition-colors border-l border-gray-300 dark:border-gray-600 ${
-              genomeBuildFilter === 'GRCh37'
-                ? 'bg-cyan text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            GRCh37
-          </button>
-        </div>
-        <select
-          value={acmgFilter}
-          onChange={(e) => { setAcmgFilter(e.target.value); setPage(1); }}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+        {/* Filters */}
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          {/* GRCh38/GRCh37 切换 */}
+          <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+            <button
+              onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh38' ? '' : 'GRCh38'); setPage(1); }}
+              className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                genomeBuildFilter === 'GRCh38'
+                  ? 'bg-cyan text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              GRCh38
+            </button>
+            <button
+              onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh37' ? '' : 'GRCh37'); setPage(1); }}
+              className={`px-3 py-2 text-xs font-semibold transition-colors border-l border-gray-300 dark:border-gray-600 ${
+                genomeBuildFilter === 'GRCh37'
+                  ? 'bg-cyan text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              GRCh37
+            </button>
+          </div>
+          <select
+            value={acmgFilter}
+            onChange={(e) => { setAcmgFilter(e.target.value); setPage(1); }}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           >
             <option value="">{t('variants.allAcmg')}</option>
           {ACMG_OPTIONS.filter(Boolean).map((opt) => (
@@ -226,6 +227,7 @@ export default function Variants() {
           placeholder={t('variants.filterByGene')}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
         />
+        </div>
       </div>
 
       {/* Table */}
