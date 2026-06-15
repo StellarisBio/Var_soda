@@ -1,0 +1,51 @@
+export default {
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    container: { center: true },
+    extend: {
+      colors: {
+        navy: {
+          DEFAULT: '#0F2B46',
+          50: '#E8EDF2',
+          100: '#C5D1DE',
+          200: '#8FA3BC',
+          300: '#59759A',
+          400: '#2D4E6E',
+          500: '#0F2B46',
+          600: '#0C2237',
+          700: '#091928',
+          800: '#06101A',
+          900: '#03070D',
+        },
+        cyan: {
+          DEFAULT: '#00B4D8',
+          50: '#E6F7FB',
+          100: '#B3E8F3',
+          200: '#80D9EB',
+          300: '#4DCAE3',
+          400: '#1ABBD8',
+          500: '#00B4D8',
+          600: '#0090AD',
+          700: '#006C82',
+          800: '#004857',
+          900: '#00242C',
+        },
+        slate: { bg: '#F0F4F8' },
+        acmg: {
+          pathogenic: '#DC2626',
+          likelyPathogenic: '#EA580C',
+          vus: '#CA8A04',
+          likelyBenign: '#2563EB',
+          benign: '#16A34A',
+        },
+      },
+      fontFamily: {
+        serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+  plugins: [],
+};
