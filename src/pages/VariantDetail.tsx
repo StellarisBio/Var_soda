@@ -176,62 +176,66 @@ export default function VariantDetail() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/variants')}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">
-              {variant.gene} - {variant.cdna_change || ''}
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{variant.protein_change || ''}</p>
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 border-b border-gray-200 bg-slate-bg px-4 pt-4 pb-4 lg:-mx-6 lg:-mt-6 lg:px-6 lg:pt-6 dark:border-gray-700 dark:bg-gray-900">
+        <div className="rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/variants')}
+                className="rounded-lg p-2 text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div>
+                <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">
+                  {variant.gene} - {variant.cdna_change || ''}
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{variant.protein_change || ''}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <StatusBadge status={variant.status} />
+              <ACMGBadge classification={variant.acmg_class} size="md" />
+              {canEdit && !editing && (
+                <button
+                  onClick={() => setEditing(true)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  <Pencil size={14} />
+                  {t('common.edit')}
+                </button>
+              )}
+              {editing && (
+                <>
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="inline-flex items-center gap-1 rounded-lg bg-cyan px-3 py-2 text-sm font-medium text-white hover:bg-cyan-600 disabled:opacity-50"
+                  >
+                    <Save size={14} />
+                    {saving ? t('common.saving') : t('common.save')}
+                  </button>
+                  <button
+                    onClick={() => { setEditing(false); loadVariant(); }}
+                    className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <X size={14} />
+                    {t('common.cancel')}
+                  </button>
+                </>
+              )}
+              {user?.role === 'admin' && !editing && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/30"
+                >
+                  <Trash2 size={14} />
+                  {t('common.delete')}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <StatusBadge status={variant.status} />
-          <ACMGBadge classification={variant.acmg_class} size="md" />
-          {canEdit && !editing && (
-            <button
-              onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              <Pencil size={14} />
-              {t('common.edit')}
-            </button>
-          )}
-          {editing && (
-            <>
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="inline-flex items-center gap-1 rounded-lg bg-cyan px-3 py-2 text-sm font-medium text-white hover:bg-cyan-600 disabled:opacity-50"
-              >
-                <Save size={14} />
-                {saving ? t('common.saving') : t('common.save')}
-              </button>
-              <button
-                onClick={() => { setEditing(false); loadVariant(); }}
-                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-              >
-                <X size={14} />
-                {t('common.cancel')}
-              </button>
-            </>
-          )}
-          {user?.role === 'admin' && !editing && (
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="inline-flex items-center gap-1 rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/30"
-            >
-              <Trash2 size={14} />
-              {t('common.delete')}
-            </button>
-          )}
         </div>
       </div>
 
