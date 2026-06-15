@@ -236,7 +236,8 @@ export default function Variants() {
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chrPos')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chromosome')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.position')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
@@ -247,13 +248,13 @@ export default function Variants() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
                   {t('common.loading')}
                 </td>
               </tr>
             ) : variants.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
                   {t('common.noData')}
                 </td>
               </tr>
@@ -267,9 +268,8 @@ export default function Variants() {
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">
-                    {v.chromosome}:{Number(v.position)}
-                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.chromosome}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{Number(v.position)}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       (v.genome_build || 'GRCh38') === 'GRCh38'
