@@ -177,7 +177,7 @@ export default function VariantDetail() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-slate-bg px-4 pt-4 pb-2 lg:-mx-6 lg:-mt-6 lg:px-6 lg:pt-6 dark:bg-gray-900">
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-slate-bg px-4 pt-4 pb-4 shadow-sm lg:-mx-6 lg:-mt-6 lg:px-6 lg:pt-6 dark:bg-gray-900 dark:shadow-gray-700/50">
         <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
