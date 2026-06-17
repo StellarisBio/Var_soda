@@ -26,6 +26,8 @@ export interface Variant {
   status: 'pending' | 'approved' | 'rejected';
   created_by: number;
   creatorName: string;
+  evidence_codes?: string[];
+  pvs1_result?: string; // JSON string of PVS1 analysis result
   created_at: string;
   updated_at: string;
 }
@@ -69,6 +71,51 @@ export interface DashboardStats {
   monthlyNew: number;
   pendingReview: number;
   acmgDistribution: Record<string, number>;
+}
+
+export interface PVS1DiseaseMechanism {
+  gene: string;
+  disease: string;
+  inheritance: string;
+  clinicalValidity: string;
+  consideration: string;
+  adjustedStrength: string;
+}
+
+export interface PVS1FlowchartNode {
+  text: string;
+  children: PVS1FlowchartNode[];
+}
+
+export interface PVS1Footnote {
+  number: number;
+  text: string;
+}
+
+export interface PVS1AnalysisResult {
+  chromosome: string;
+  position: number;
+  ref: string;
+  alt: string;
+  genomeBuild: string;
+  variantType: string | null;
+  gene: string | null;
+  pli: number | null;
+  haploinsufficiency: string | null;
+  chgvs: string | null;
+  phgvs: string | null;
+  exon: string | null;
+  intron: string | null;
+  incompatible: boolean;
+  incompatibilityMessage: string | null;
+  preliminaryPath: string | null;
+  preliminaryStrength: string | null;
+  adjustedStrength: string | null;
+  flowchartTree: PVS1FlowchartNode[];
+  footnotes: PVS1Footnote[];
+  diseaseMechanisms: PVS1DiseaseMechanism[];
+  externalLinks: Record<string, string>;
+  autopvs1Url: string;
 }
 
 export interface EvidenceInput {

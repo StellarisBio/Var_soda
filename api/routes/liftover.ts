@@ -32,7 +32,7 @@ function processVariants(data: any, inputRef?: string, inputAlt?: string, inputV
 }
 
 /**
- * GET /api/liftover - Liftover 单个变体
+ * GET /api/liftover - Liftover 单个变异
  * 参数: chr, pos, ref, alt, from (hg19/hg38), dest (hg19/hg38)
  */
 router.get('/', async (req: Request, res: Response): Promise<void> => {
@@ -56,7 +56,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     }
 
     // 使用 POST 方式调用 GeneBe API（字符串数组格式，用 - 分隔）
-    // GET 方式用 : 分隔时某些变体会返回空结果
+    // GET 方式用 : 分隔时某些变异会返回空结果
     const chrNum = (chr as string).replace(/^chr/i, '')
     const queryStr = `${chrNum}-${pos}-${ref}-${alt}`
     const url = `${GENEBE_API_BASE}/liftover?from=${from}&dest=${dest}`
@@ -89,9 +89,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 })
 
 /**
- * POST /api/liftover - Liftover 多个变体
+ * POST /api/liftover - Liftover 多个变异
  * 参数: from, dest (query)
- * Body: 变体数组 [{chr, pos, ref, alt}, ...]
+ * Body: 变异数组 [{chr, pos, ref, alt}, ...]
  */
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
@@ -115,12 +115,12 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     }
 
     if (!Array.isArray(variants) || variants.length === 0) {
-      res.status(400).json({ success: false, error: '请提供变体数组' })
+      res.status(400).json({ success: false, error: '请提供变异数组' })
       return
     }
 
     if (variants.length > 1000) {
-      res.status(400).json({ success: false, error: '单次最多转换 1000 个变体' })
+      res.status(400).json({ success: false, error: '单次最多转换 1000 个变异' })
       return
     }
 

@@ -7,12 +7,12 @@ import ACMGBadge from '@/components/ACMGBadge';
 import StatusBadge from '@/components/StatusBadge';
 import { useI18n } from '@/hooks/useI18n';
 
-const ACMG_BAR_COLORS: Record<string, string> = {
-  'Pathogenic': 'bg-acmg-pathogenic',
-  'Likely Pathogenic': 'bg-acmg-likelyPathogenic',
-  'VUS': 'bg-acmg-vus',
-  'Likely Benign': 'bg-acmg-likelyBenign',
-  'Benign': 'bg-acmg-benign',
+const ACMG_PIE_COLORS: Record<string, string> = {
+  'Pathogenic': '#dc2626',
+  'Likely Pathogenic': '#ea580c',
+  'VUS': '#ca8a04',
+  'Likely Benign': '#2563eb',
+  'Benign': '#16a34a',
 };
 
 export default function Dashboard() {
@@ -50,10 +50,6 @@ export default function Dashboard() {
       </div>
     );
   }
-
-  const maxDist = stats
-    ? Math.max(...Object.values(stats.acmgDistribution), 1)
-    : 1;
 
   return (
     <div className="space-y-6">
@@ -93,27 +89,56 @@ export default function Dashboard() {
           <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">
             {t('dashboard.acmgDistribution')}
           </h2>
-          <div className="space-y-3">
-            {stats && Object.entries(stats.acmgDistribution).map(([cls, count]) => (
-              <div key={cls} className="flex items-center gap-3">
-                <span className="w-32 text-sm text-gray-600 dark:text-gray-400">{cls}</span>
-                <div className="flex-1">
-                  <div className="h-6 overflow-hidden rounded bg-gray-100 dark:bg-gray-700">
-                    <div
-                      className={`h-full rounded ${ACMG_BAR_COLORS[cls] || 'bg-gray-400'}`}
-                      style={{ width: `${(count / maxDist) * 100}%`, minWidth: count > 0 ? '2rem' : '0' }}
+          {stats ? (
+            <div className="flex items-center gap-6">
+              <svg viewBox="-1.2 -1.2 2.4 2.4" className="h-48 w-48 flex-shrink-0">
+                {(() => {
+                  const allClasses = ['Pathogenic', 'Likely Pathogenic', 'VUS', 'Likely Benign', 'Benign']
+                  const total = allClasses.reduce((sum, cls) => sum + (stats.acmgDistribution[cls] || 0), 0)
+                  if (total === 0) return <circle cx="0" cy="0" r="1" fill="#e5e7eb" />
+                  let cumulative = 0
+                  return allClasses.map((cls) => {
+                    const count = stats.acmgDistribution[cls] || 0
+                    if (count === 0) return null
+                    const fraction = count / total
+                    const startAngle = cumulative / total * 2 * Math.PI - Math.PI / 2
+                    cumulative += count
+                    const endAngle = cumulative / total * 2 * Math.PI - Math.PI / 2
+                    // 单扇区占满整个圆
+                    if (fraction >= 1 - 1e-9) {
+                      return <circle key={cls} cx="0" cy="0" r="1" fill={ACMG_PIE_COLORS[cls]} />
+                    }
+                    const largeArc = fraction > 0.5 ? 1 : 0
+                    const x1 = Math.cos(startAngle)
+                    const y1 = Math.sin(startAngle)
+                    const x2 = Math.cos(endAngle)
+                    const y2 = Math.sin(endAngle)
+                    return (
+                      <path
+                        key={cls}
+                        d={`M 0 0 L ${x1} ${y1} A 1 1 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                        fill={ACMG_PIE_COLORS[cls]}
+                      />
+                    )
+                  })
+                })()}
+              </svg>
+              <div className="flex-1 space-y-2">
+                {['Pathogenic', 'Likely Pathogenic', 'VUS', 'Likely Benign', 'Benign'].map((cls) => (
+                  <div key={cls} className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-3 w-3 rounded-sm flex-shrink-0"
+                      style={{ backgroundColor: ACMG_PIE_COLORS[cls] }}
                     />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{cls}</span>
+                    <span className="ml-auto font-mono text-sm font-medium text-gray-700 dark:text-gray-300">{stats.acmgDistribution[cls] || 0}</span>
                   </div>
-                </div>
-                <span className="w-8 text-right font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {count}
-                </span>
+                ))}
               </div>
-            ))}
-            {(!stats || Object.keys(stats.acmgDistribution).length === 0) && (
-              <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('common.noData')}</p>
-            )}
-          </div>
+            </div>
+          ) : (
+            <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('common.noData')}</p>
+          )}
         </div>
 
         {/* Pending Review */}
@@ -149,33 +174,65 @@ export default function Dashboard() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="pb-3 pr-4 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
-                <th className="pb-3 pr-4 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
-                <th className="pb-3 pr-4 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
-                <th className="pb-3 pr-4 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
-                <th className="pb-3 pr-4 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
-                <th className="pb-3 font-medium text-gray-500 dark:text-gray-400">{t('common.date')}</th>
+              <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chrPos')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.transcript')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.refAllele')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.altAllele')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmgEvidence')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
+                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
               </tr>
             </thead>
             <tbody>
               {recentVariants.map((v) => (
-                <tr key={v.id} className="border-b border-gray-50 dark:border-gray-700/50">
-                  <td className="py-3 pr-4">
-                    <Link to={`/variants/${v.id}`} className="font-mono font-medium text-cyan dark:text-cyan-400 hover:underline">
-                      {v.gene}
+                <tr key={v.id} className="border-b border-gray-50 transition-colors hover:bg-gray-50 dark:border-gray-700/50 dark:hover:bg-gray-700/50">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-cyan dark:text-cyan-400">
+                    {v.gene}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-green-600 hover:underline dark:text-green-400">
+                      {v.chromosome}-{Number(v.position)}
                     </Link>
                   </td>
-                  <td className="py-3 pr-4 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change}</td>
-                  <td className="py-3 pr-4 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change}</td>
-                  <td className="py-3 pr-4"><ACMGBadge classification={v.acmg_class} /></td>
-                  <td className="py-3 pr-4"><StatusBadge status={v.status} /></td>
-                  <td className="py-3 text-xs text-gray-500 dark:text-gray-500">{new Date(v.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.transcript || ''}</td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 font-mono text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-rose-50 px-1.5 py-0.5 font-mono text-xs font-medium text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">{v.alt_allele}</span></td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                      (v.genome_build || 'GRCh38') === 'GRCh38'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                    }`}>
+                      {v.genome_build || 'GRCh38'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {v.evidence_codes && v.evidence_codes.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {v.evidence_codes.map((code) => (
+                          <span key={code} className="inline-flex items-center rounded bg-cyan-50 px-1.5 py-0.5 font-mono text-xs font-medium text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                            {code}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3"><ACMGBadge classification={v.acmg_class} /></td>
+                  <td className="px-4 py-3"><StatusBadge status={v.status} /></td>
                 </tr>
               ))}
               {recentVariants.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-400 dark:text-gray-500">
+                  <td colSpan={11} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
                     {t('dashboard.noVariants')}
                   </td>
                 </tr>

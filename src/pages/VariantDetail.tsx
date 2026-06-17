@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Save, X, Pencil, Trash2, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
-import type { VariantDetail, EvidenceInput } from '@shared/types';
+import { Save, X, Pencil, Trash2, ArrowLeft, CheckCircle, XCircle, Zap, ExternalLink, Bookmark } from 'lucide-react';
+import type { VariantDetail, EvidenceInput, PVS1AnalysisResult, PVS1FlowchartNode } from '@shared/types';
 import * as api from '@/utils/api';
 import ACMGBadge from '@/components/ACMGBadge';
 import StatusBadge from '@/components/StatusBadge';
@@ -63,6 +63,12 @@ export default function VariantDetail() {
   // Delete confirm state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // AutoPVS1 state
+  const [pvs1Result, setPvs1Result] = useState<PVS1AnalysisResult | null>(null);
+  const [pvs1Analyzing, setPvs1Analyzing] = useState(false);
+  const [pvs1Saving, setPvs1Saving] = useState(false);
+  const [pvs1Error, setPvs1Error] = useState<string | null>(null);
+
   useEffect(() => {
     loadVariant();
   }, [id]);
@@ -97,6 +103,14 @@ export default function VariantDetail() {
           };
         })
       );
+      // 加载已保存的 PVS1 结果
+      if (data.pvs1_result) {
+        try {
+          setPvs1Result(JSON.parse(data.pvs1_result));
+        } catch { /* ignore parse error */ }
+      } else {
+        setPvs1Result(null);
+      }
     } catch {
       navigate('/variants');
     } finally {
@@ -159,6 +173,39 @@ export default function VariantDetail() {
     setEvidences((prev) =>
       prev.map((e) => (e.code === code ? { ...e, description } : e))
     );
+  };
+
+  const handleAutoPVS1Analyze = async () => {
+    if (!variant) return;
+    setPvs1Analyzing(true);
+    setPvs1Error(null);
+    try {
+      const res = await api.analyzeAutoPVS1({
+        chromosome: variant.chromosome,
+        position: variant.position,
+        ref: variant.ref_allele,
+        alt: variant.alt_allele,
+        genome_build: variant.genome_build || 'GRCh38',
+      });
+      setPvs1Result(res.data);
+    } catch (err: any) {
+      setPvs1Error(err.message || t('autopvs1.analysisFailed'));
+    } finally {
+      setPvs1Analyzing(false);
+    }
+  };
+
+  const handleSavePVS1Result = async () => {
+    if (!variant || !pvs1Result) return;
+    setPvs1Saving(true);
+    try {
+      await api.savePVS1Result(variant.id, pvs1Result);
+      loadVariant();
+    } catch {
+      // handle error
+    } finally {
+      setPvs1Saving(false);
+    }
   };
 
   if (loading) {
@@ -371,6 +418,226 @@ export default function VariantDetail() {
         </div>
       </div>
 
+      {/* AutoPVS1 Analysis */}
+      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="font-serif text-lg font-semibold text-navy dark:text-white">{t('autopvs1.title')}</h2>
+            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.description')}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {pvs1Result && (
+              <button
+                onClick={handleSavePVS1Result}
+                disabled={pvs1Saving}
+                className="inline-flex items-center gap-1 rounded-lg border border-cyan-300 px-3 py-2 text-sm font-medium text-cyan-700 hover:bg-cyan-50 disabled:opacity-50 dark:border-cyan-700 dark:text-cyan-400 dark:hover:bg-cyan-900/30"
+              >
+                <Bookmark size={14} />
+                {pvs1Saving ? t('autopvs1.saving') : t('autopvs1.saveResult')}
+              </button>
+            )}
+            <button
+              onClick={handleAutoPVS1Analyze}
+              disabled={pvs1Analyzing}
+              className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-cyan to-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50"
+            >
+              <Zap size={14} />
+              {pvs1Analyzing ? t('autopvs1.analyzing') : t('autopvs1.analyze')}
+            </button>
+          </div>
+        </div>
+
+        {pvs1Error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
+            {pvs1Error}
+          </div>
+        )}
+
+        {pvs1Analyzing && (
+          <div className="flex items-center justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan border-t-transparent" />
+            <span className="ml-3 text-sm text-gray-500 dark:text-gray-400">{t('autopvs1.analyzing')}</span>
+          </div>
+        )}
+
+        {!pvs1Analyzing && !pvs1Result && !pvs1Error && (
+          <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">{t('autopvs1.noResult')}</p>
+        )}
+
+        {pvs1Result && !pvs1Analyzing && (
+          <div className="space-y-5">
+            {/* Incompatible warning */}
+            {pvs1Result.incompatible && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/30">
+                <p className="text-sm font-medium text-amber-800 dark:text-amber-300">{t('autopvs1.incompatible')}</p>
+              </div>
+            )}
+
+            {/* Variant Info */}
+            <div>
+              <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.variantInfo')}</h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {pvs1Result.variantType && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.variantType')}</p>
+                    <p className="font-mono text-sm font-semibold text-navy dark:text-white">{pvs1Result.variantType}</p>
+                  </div>
+                )}
+                {pvs1Result.gene && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.gene')}</p>
+                    <p className="font-mono text-sm font-semibold text-cyan dark:text-cyan-400">{pvs1Result.gene}</p>
+                  </div>
+                )}
+                {pvs1Result.pli !== null && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.pli')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.pli}</p>
+                  </div>
+                )}
+                {pvs1Result.haploinsufficiency && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.haploinsufficiency')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.haploinsufficiency}</p>
+                  </div>
+                )}
+                {pvs1Result.chgvs && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.chgvs')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.chgvs}</p>
+                  </div>
+                )}
+                {pvs1Result.phgvs && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.phgvs')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.phgvs}</p>
+                  </div>
+                )}
+                {pvs1Result.exon && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.exon')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.exon}</p>
+                  </div>
+                )}
+                {pvs1Result.intron && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.intron')}</p>
+                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.intron}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* PVS1 Flowchart */}
+            {!pvs1Result.incompatible && pvs1Result.flowchartTree.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.flowchart')}</h3>
+                <div className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
+                  {pvs1Result.preliminaryPath && (
+                    <div className="mb-3 rounded bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5">
+                      <span className="text-xs text-gray-600 dark:text-gray-400">{t('autopvs1.preliminaryPath')}: </span>
+                      <span className="font-mono text-xs font-bold text-navy dark:text-white">{pvs1Result.preliminaryPath}</span>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    {pvs1Result.flowchartTree.map((node, idx) => (
+                      <FlowchartNodeInline key={idx} node={node} depth={0} />
+                    ))}
+                  </div>
+                  {pvs1Result.footnotes.length > 0 && (
+                    <div className="mt-3 space-y-1.5 border-t border-gray-100 dark:border-gray-700 pt-3">
+                      {pvs1Result.footnotes.map((fn) => (
+                        <div key={fn.number} className="flex items-start gap-2 text-xs">
+                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-cyan-100 font-bold text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                            {fn.number}
+                          </span>
+                          <p className="text-gray-600 dark:text-gray-400">{fn.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {pvs1Result.preliminaryStrength && (
+                    <div className="mt-3 flex items-center gap-2 rounded-lg bg-cyan-50 px-3 py-2 dark:bg-cyan-900/20">
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{t('autopvs1.preliminaryStrength')}:</span>
+                      <span className="text-sm font-bold text-cyan-700 dark:text-cyan-400">{pvs1Result.preliminaryStrength}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Disease Mechanism */}
+            {pvs1Result.diseaseMechanisms.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.diseaseMechanism')}</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 dark:border-gray-700">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.gene')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.disease')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.inheritance')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.clinicalValidity')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.consideration')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.adjustedStrength')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pvs1Result.diseaseMechanisms.map((dm, idx) => (
+                        <tr key={idx} className="border-b border-gray-100 dark:border-gray-700/50">
+                          <td className="px-3 py-2 font-mono text-xs text-cyan dark:text-cyan-400">{dm.gene}</td>
+                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.disease}</td>
+                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.inheritance}</td>
+                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.clinicalValidity}</td>
+                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.consideration}</td>
+                          <td className="px-3 py-2 text-xs font-bold text-cyan-700 dark:text-cyan-400">{dm.adjustedStrength}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {pvs1Result.adjustedStrength && (
+                  <div className="mt-3 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-900/20">
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{t('autopvs1.adjustedStrength')}:</span>
+                    <span className="text-sm font-bold text-blue-700 dark:text-blue-400">{pvs1Result.adjustedStrength}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* External Links */}
+            <div className="flex flex-wrap gap-3">
+              {pvs1Result.autopvs1Url && (
+                <a
+                  href={pvs1Result.autopvs1Url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  <ExternalLink size={12} />
+                  {t('autopvs1.openInNewTab')}
+                </a>
+              )}
+              {pvs1Result.externalLinks.gnomAD && (
+                <a href={pvs1Result.externalLinks.gnomAD} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                  gnomAD
+                </a>
+              )}
+              {pvs1Result.externalLinks.clinVar && (
+                <a href={pvs1Result.externalLinks.clinVar} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                  ClinVar
+                </a>
+              )}
+              {pvs1Result.externalLinks.omim && (
+                <a href={pvs1Result.externalLinks.omim} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                  OMIM
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Reviews */}
         <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
@@ -532,6 +799,30 @@ function InfoField({
         />
       ) : (
         <p className="font-mono text-sm text-navy dark:text-white">{value}</p>
+      )}
+    </div>
+  );
+}
+
+// 递归渲染流程图节点（内联版）
+function FlowchartNodeInline({ node, depth }: { node: PVS1FlowchartNode; depth: number }) {
+  const strengthValues = ['PVS1', 'Very Strong', 'Strong', 'Moderate', 'Supporting']
+  const isStrength = strengthValues.some(s => node.text.toLowerCase() === s.toLowerCase())
+
+  return (
+    <div style={{ paddingLeft: depth > 0 ? '20px' : '0' }}>
+      <div className={`flex items-start gap-2 py-0.5 ${isStrength ? 'rounded bg-cyan-50 dark:bg-cyan-900/20 px-2' : ''}`}>
+        {!isStrength && depth > 0 && <span className="mt-1 text-gray-400">·</span>}
+        <p className={`text-xs ${isStrength ? 'font-bold text-cyan-700 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>
+          {node.text}
+        </p>
+      </div>
+      {node.children && node.children.length > 0 && (
+        <div>
+          {node.children.map((child, idx) => (
+            <FlowchartNodeInline key={idx} node={child} depth={depth + 1} />
+          ))}
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import type { User, Variant, VariantDetail, DashboardStats, EvidenceInput } from '@shared/types';
+import type { User, Variant, VariantDetail, DashboardStats, EvidenceInput, PVS1AnalysisResult } from '@shared/types';
 
 const BASE_URL = '/api';
 
@@ -131,6 +131,8 @@ export async function getVariants(params?: {
   page?: number;
   pageSize?: number;
   search?: string;
+  chromosome?: string;
+  position?: number;
   acmgClass?: string;
   status?: string;
   gene?: string;
@@ -248,4 +250,28 @@ export async function updateUser(
 // Dashboard
 export async function getDashboardStats(): Promise<{ success: boolean; data: DashboardStats }> {
   return request('/dashboard/stats');
+}
+
+// AutoPVS1
+export async function analyzeAutoPVS1(params: {
+  chromosome: string;
+  position: number;
+  ref: string;
+  alt: string;
+  genome_build?: string;
+}): Promise<{ success: boolean; data: PVS1AnalysisResult }> {
+  const query = new URLSearchParams();
+  query.set('chromosome', params.chromosome);
+  query.set('position', String(params.position));
+  query.set('ref', params.ref);
+  query.set('alt', params.alt);
+  if (params.genome_build) query.set('genome_build', params.genome_build);
+  return request(`/autopvs1/analyze?${query.toString()}`);
+}
+
+export async function savePVS1Result(variantId: number, pvs1Result: PVS1AnalysisResult): Promise<{ success: boolean }> {
+  return request('/autopvs1/save', {
+    method: 'POST',
+    body: JSON.stringify({ variantId, pvs1Result }),
+  });
 }

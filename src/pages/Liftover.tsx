@@ -277,7 +277,7 @@ export default function Liftover() {
           <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{t('liftover.pasteHint')}</p>
         </div>
 
-        {/* 变体输入 */}
+        {/* 变异输入 */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.chromosome')} *</label>

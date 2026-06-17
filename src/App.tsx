@@ -12,6 +12,7 @@ import VariantNew from '@/pages/VariantNew';
 import Users from '@/pages/Users';
 import Profile from '@/pages/Profile';
 import Liftover from '@/pages/Liftover';
+import AutoPVS1 from '@/pages/AutoPVS1';
 
 export default function App() {
   const { isAuthenticated, loadUser } = useAuthStore();
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/variants/new" element={<VariantNew />} />
           <Route path="/variants/:id" element={<VariantDetail />} />
           <Route path="/liftover" element={<Liftover />} />
+          <Route path="/autopvs1" element={<AutoPVS1 />} />
           <Route path="/profile" element={<Profile />} />
           <Route
             path="/users"

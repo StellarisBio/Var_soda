@@ -252,6 +252,9 @@ CREATE TABLE IF NOT EXISTS variant_history (
     if (!columnNames.includes('genome_build')) {
       db.run("ALTER TABLE variants ADD COLUMN genome_build TEXT NOT NULL DEFAULT 'GRCh38' CHECK(genome_build IN ('GRCh37', 'GRCh38'))")
     }
+    if (!columnNames.includes('pvs1_result')) {
+      db.run('ALTER TABLE variants ADD COLUMN pvs1_result TEXT')
+    }
   }
 
   // 迁移：为已有的 users 表添加缺失的列

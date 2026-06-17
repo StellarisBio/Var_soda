@@ -72,7 +72,7 @@ const COLUMN_MAP: Record<string, string> = {
 const VALID_ACMG = ['Pathogenic', 'Likely Pathogenic', 'VUS', 'Likely Benign', 'Benign']
 
 /**
- * POST /api/variants/import - 批量导入变体（CSV 文件）
+ * POST /api/variants/import - 批量导入变异（CSV 文件）
  */
 router.post('/import', authenticate, csvUpload.single('file'), (req: Request, res: Response): void => {
   try {
@@ -215,6 +215,8 @@ router.get('/', (req: Request, res: Response): void => {
     const page = Math.max(1, parseInt(req.query.page as string) || 1)
     const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize as string) || 20))
     const search = req.query.search as string || ''
+    const chromosome = req.query.chromosome as string || ''
+    const positionStr = req.query.position as string || ''
     const acmgClass = req.query.acmgClass as string || ''
     const status = req.query.status as string || ''
     const gene = req.query.gene as string || ''
@@ -226,6 +228,17 @@ router.get('/', (req: Request, res: Response): void => {
     if (search) {
       conditions.push('(v.gene LIKE ? OR v.cdna_change LIKE ? OR v.protein_change LIKE ?)')
       params.push(`%${search}%`, `%${search}%`, `%${search}%`)
+    }
+    if (chromosome) {
+      conditions.push('v.chromosome = ?')
+      params.push(chromosome)
+    }
+    if (positionStr) {
+      const position = parseInt(positionStr)
+      if (!isNaN(position)) {
+        conditions.push('v.position = ?')
+        params.push(position)
+      }
     }
     if (acmgClass) {
       conditions.push('v.acmg_class = ?')
@@ -254,6 +267,12 @@ router.get('/', (req: Request, res: Response): void => {
       `SELECT v.*, u.name as creatorName FROM variants v LEFT JOIN users u ON v.created_by = u.id ${whereClause} ORDER BY v.created_at DESC LIMIT ? OFFSET ?`
     ).all(...params, pageSize, offset) as any[]
 
+    // 为每个变异附加已勾选的 ACMG 证据 code
+    for (const variant of variants) {
+      const evidences = db.prepare('SELECT code FROM acmg_evidences WHERE variant_id = ? AND checked = 1').all(variant.id) as any[]
+      variant.evidence_codes = evidences.map((e: any) => e.code)
+    }
+
     res.json({
       success: true,
       data: {
@@ -264,7 +283,7 @@ router.get('/', (req: Request, res: Response): void => {
       },
     })
   } catch (error) {
-    res.status(500).json({ success: false, error: '获取变体列表失败' })
+    res.status(500).json({ success: false, error: '获取变异列表失败' })
   }
 })
 
@@ -279,7 +298,7 @@ router.get('/:id', (req: Request, res: Response): void => {
     ).get(req.params.id) as any
 
     if (!variant) {
-      res.status(404).json({ success: false, error: '变体不存在' })
+      res.status(404).json({ success: false, error: '变异不存在' })
       return
     }
 
@@ -300,7 +319,7 @@ router.get('/:id', (req: Request, res: Response): void => {
 
     res.json({ success: true, data: detail })
   } catch (error) {
-    res.status(500).json({ success: false, error: '获取变体详情失败' })
+    res.status(500).json({ success: false, error: '获取变异详情失败' })
   }
 })
 
@@ -353,7 +372,7 @@ router.post('/', authenticate, (req: Request, res: Response): void => {
         }
       }
 
-      insertHistory.run(variantId, req.user!.id, '创建变体', null)
+      insertHistory.run(variantId, req.user!.id, '创建变异', null)
 
       return variantId
     })
@@ -365,7 +384,7 @@ router.post('/', authenticate, (req: Request, res: Response): void => {
 
     res.status(201).json({ success: true, data: variant })
   } catch (error) {
-    res.status(500).json({ success: false, error: '创建变体失败' })
+    res.status(500).json({ success: false, error: '创建变异失败' })
   }
 })
 
@@ -377,14 +396,14 @@ router.put('/:id', authenticate, (req: Request, res: Response): void => {
     const db = getDb()
     const variant = db.prepare('SELECT * FROM variants WHERE id = ?').get(req.params.id) as any
     if (!variant) {
-      res.status(404).json({ success: false, error: '变体不存在' })
+      res.status(404).json({ success: false, error: '变异不存在' })
       return
     }
 
     const userRole = req.user!.role
     const userId = req.user!.id
     if (variant.created_by !== userId && userRole !== 'admin' && userRole !== 'reviewer') {
-      res.status(403).json({ success: false, error: '无权修改此变体' })
+      res.status(403).json({ success: false, error: '无权修改此变异' })
       return
     }
 
@@ -442,7 +461,7 @@ router.put('/:id', authenticate, (req: Request, res: Response): void => {
         insertHistory.run(
           parseInt(req.params.id),
           userId,
-          '更新变体',
+          '更新变异',
           changes.length > 0 ? JSON.stringify(changes) : null
         )
       }
@@ -456,7 +475,7 @@ router.put('/:id', authenticate, (req: Request, res: Response): void => {
 
     res.json({ success: true, data: updated })
   } catch (error) {
-    res.status(500).json({ success: false, error: '更新变体失败' })
+    res.status(500).json({ success: false, error: '更新变异失败' })
   }
 })
 
@@ -467,13 +486,13 @@ router.delete('/:id', authenticate, (req: Request, res: Response): void => {
   try {
     const db = getDb()
     if (req.user!.role !== 'admin') {
-      res.status(403).json({ success: false, error: '仅管理员可删除变体' })
+      res.status(403).json({ success: false, error: '仅管理员可删除变异' })
       return
     }
 
     const variant = db.prepare('SELECT * FROM variants WHERE id = ?').get(req.params.id) as any
     if (!variant) {
-      res.status(404).json({ success: false, error: '变体不存在' })
+      res.status(404).json({ success: false, error: '变异不存在' })
       return
     }
 
@@ -481,7 +500,7 @@ router.delete('/:id', authenticate, (req: Request, res: Response): void => {
 
     res.json({ success: true, data: null })
   } catch (error) {
-    res.status(500).json({ success: false, error: '删除变体失败' })
+    res.status(500).json({ success: false, error: '删除变异失败' })
   }
 })
 
@@ -493,13 +512,13 @@ router.post('/:id/review', authenticate, (req: Request, res: Response): void => 
     const db = getDb()
     const userRole = req.user!.role
     if (userRole !== 'admin' && userRole !== 'reviewer') {
-      res.status(403).json({ success: false, error: '仅审核员或管理员可审核变体' })
+      res.status(403).json({ success: false, error: '仅审核员或管理员可审核变异' })
       return
     }
 
     const variant = db.prepare('SELECT * FROM variants WHERE id = ?').get(req.params.id) as any
     if (!variant) {
-      res.status(404).json({ success: false, error: '变体不存在' })
+      res.status(404).json({ success: false, error: '变异不存在' })
       return
     }
 
@@ -525,7 +544,7 @@ router.post('/:id/review', authenticate, (req: Request, res: Response): void => 
       insertHistory.run(
         parseInt(req.params.id),
         req.user!.id,
-        '审核变体',
+        '审核变异',
         JSON.stringify([`状态变更为: ${status === 'approved' ? '已通过' : '已拒绝'}`])
       )
     })
@@ -538,7 +557,7 @@ router.post('/:id/review', authenticate, (req: Request, res: Response): void => 
 
     res.json({ success: true, data: updated })
   } catch (error) {
-    res.status(500).json({ success: false, error: '审核变体失败' })
+    res.status(500).json({ success: false, error: '审核变异失败' })
   }
 })
 

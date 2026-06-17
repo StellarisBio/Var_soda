@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Dna, Users, LogOut, Menu, ChevronLeft, Languages, UserCircle, User, ArrowRightLeft, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Dna, Users, LogOut, Menu, ChevronLeft, Languages, UserCircle, User, ArrowRightLeft, Sun, Moon, Zap } from 'lucide-react';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { useI18n } from '@/hooks/useI18n';
 import { useTheme } from '@/hooks/useTheme';
@@ -8,6 +8,7 @@ import { useTheme } from '@/hooks/useTheme';
 const navItems = [
   { to: '/dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard },
   { to: '/variants', labelKey: 'nav.variants', icon: Dna },
+  { to: '/autopvs1', labelKey: 'nav.autopvs1', icon: Zap },
   { to: '/liftover', labelKey: 'nav.liftover', icon: ArrowRightLeft },
   { to: '/users', labelKey: 'nav.users', icon: Users, adminOnly: true },
 ];

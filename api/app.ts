@@ -18,6 +18,7 @@ import userRoutes from './routes/users.js'
 import dashboardRoutes from './routes/dashboard.js'
 import verificationRoutes from './routes/verification.js'
 import liftoverRoutes from './routes/liftover.js'
+import autopvs1Routes from './routes/autopvs1.js'
 
 // load env
 dotenv.config()
@@ -49,6 +50,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/verification', verificationRoutes)
 app.use('/api/liftover', liftoverRoutes)
+app.use('/api/autopvs1', autopvs1Routes)
 
 /**
  * health

@@ -42,10 +42,12 @@ export default function Variants() {
   const loadVariants = async () => {
     setLoading(true);
     try {
+      const parsed = parseSearch(search);
       const res = await api.getVariants({
         page,
         pageSize,
-        search: search || undefined,
+        chromosome: parsed.chromosome || undefined,
+        position: parsed.position || undefined,
         acmgClass: acmgFilter || undefined,
         status: statusFilter || undefined,
         gene: geneFilter || undefined,
@@ -64,6 +66,27 @@ export default function Variants() {
     e.preventDefault();
     setPage(1);
     loadVariants();
+  };
+
+  // 解析搜索输入，兼容多种染色体位置格式
+  const parseSearch = (text: string): { chromosome?: string; position?: number; keyword?: string } => {
+    const trimmed = text.trim();
+    if (!trimmed) return {};
+
+    // 尝试解析为染色体位置格式: chr17:41244651, 17:41244651, chr17-41244651, 17-41244651 等
+    const cleaned = trimmed.replace(/^chr/i, '');
+    const match = cleaned.match(/^(\d{1,2}|X|Y|MT?)\s*[:\-_]\s*(\d+)/i);
+    if (match) {
+      return { chromosome: match[1], position: parseInt(match[2]) };
+    }
+
+    // 纯数字可能是位置
+    if (/^\d+$/.test(trimmed) && trimmed.length >= 4) {
+      return { position: parseInt(trimmed) };
+    }
+
+    // 否则作为关键词搜索
+    return { keyword: trimmed };
   };
 
   // 批量导入
@@ -162,9 +185,18 @@ export default function Variants() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('variants.searchPlaceholder')}
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+            placeholder={t('variants.searchPlaceholderNew')}
+            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-9 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => { setSearch(''); setPage(1); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-600 dark:hover:text-gray-300"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
         <button
           type="submit"
@@ -219,13 +251,24 @@ export default function Variants() {
             <option key={opt} value={opt}>{t(`statusBadge.${opt}`)}</option>
           ))}
         </select>
-        <input
-          type="text"
-          value={geneFilter}
-          onChange={(e) => setGeneFilter(e.target.value)}
-          placeholder={t('variants.filterByGene')}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
-        />
+        <div className="relative">
+          <input
+            type="text"
+            value={geneFilter}
+            onChange={(e) => setGeneFilter(e.target.value)}
+            placeholder={t('variants.filterByGene')}
+            className="rounded-lg border border-gray-300 px-3 py-2 pr-8 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+          />
+          {geneFilter && (
+            <button
+              type="button"
+              onClick={() => { setGeneFilter(''); setPage(1); }}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-600 dark:hover:text-gray-300"
+            >
+              <X size={12} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
@@ -234,40 +277,45 @@ export default function Variants() {
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chromosome')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.position')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chrPos')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.transcript')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.refAllele')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.altAllele')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
+              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmgEvidence')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
               <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.createdBy')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.date')}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={11} className="px-4 py-12 text-center text-gray-400">
                   {t('common.loading')}
                 </td>
               </tr>
             ) : variants.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={11} className="px-4 py-12 text-center text-gray-400">
                   {t('common.noData')}
                 </td>
               </tr>
             ) : (
               variants.map((v) => (
                 <tr key={v.id} className="border-b border-gray-50 transition-colors hover:bg-gray-50 dark:border-gray-700/50 dark:hover:bg-gray-700/50">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-cyan dark:text-cyan-400">
+                    {v.gene}
+                  </td>
                   <td className="px-4 py-3">
-                    <Link to={`/variants/${v.id}`} className="font-mono font-medium text-cyan hover:underline dark:text-cyan-400">
-                      {v.gene}
+                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-green-600 hover:underline dark:text-green-400">
+                      {v.chromosome}-{Number(v.position)}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.chromosome}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{Number(v.position)}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.transcript || ''}</td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 font-mono text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-rose-50 px-1.5 py-0.5 font-mono text-xs font-medium text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">{v.alt_allele}</span></td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
@@ -279,12 +327,21 @@ export default function Variants() {
                       {v.genome_build || 'GRCh38'}
                     </span>
                   </td>
+                  <td className="px-4 py-3">
+                    {v.evidence_codes && v.evidence_codes.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {v.evidence_codes.map((code) => (
+                          <span key={code} className="inline-flex items-center rounded bg-cyan-50 px-1.5 py-0.5 font-mono text-xs font-medium text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                            {code}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3"><ACMGBadge classification={v.acmg_class} /></td>
                   <td className="px-4 py-3"><StatusBadge status={v.status} /></td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{v.creatorName || ''}</td>
-                  <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-500">
-                    {new Date(v.created_at).toLocaleDateString()}
-                  </td>
                 </tr>
               ))
             )}
