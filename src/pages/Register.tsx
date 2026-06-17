@@ -105,12 +105,13 @@ export default function Register() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-navy via-navy-600 to-navy-800 px-4 py-8">
-      {/* Language & Theme toggle - 页面右上角 */}
-      <div className="absolute right-4 top-4 flex gap-2">
+    // 根容器：深色 base-900 背景 + 入场动画
+    <div className="relative flex min-h-screen animate-fade-in items-center justify-center bg-base-900 px-4 py-8">
+      {/* Language & Theme toggle - 页面右上角，使用玻璃态按钮，z-10 确保层级 */}
+      <div className="absolute right-4 top-4 z-10 flex gap-2">
         <button
           onClick={toggleTheme}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          className="glass inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-base-100 transition-colors hover:border-action"
           title={theme === 'light' ? t('common.darkMode') : t('common.lightMode')}
         >
           {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
@@ -118,35 +119,35 @@ export default function Register() {
         </button>
         <button
           onClick={toggleLang}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          className="glass inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-base-100 transition-colors hover:border-action"
         >
           {lang === 'zh' ? '中文' : 'EN'} / {lang === 'zh' ? 'EN' : '中文'}
         </button>
       </div>
 
-      <div className="w-full max-w-md">
-        {/* Logo */}
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo 区域：DNA 图标用 from-nav to-action 渐变背景包裹 + animate-float 浮动 + gradient-text 渐变文字 */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex items-center justify-center rounded-2xl bg-cyan/10 p-4">
-            <Dna size={40} className="text-cyan" />
+          <div className="mb-4 inline-flex animate-float items-center justify-center rounded-2xl bg-gradient-to-br from-nav to-action p-4">
+            <Dna size={40} className="text-white" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-white">
-            WES<span className="text-cyan">DB</span>
+          <h1 className="gradient-text font-display text-3xl font-bold">
+            Var_soda
           </h1>
-          <p className="mt-2 text-navy-200">{t('auth.createSubtitle')}</p>
+          <p className="mt-2 text-base-300">{t('auth.createSubtitle')}</p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-xl bg-white p-8 shadow-xl dark:bg-gray-800">
-          <h2 className="mb-6 font-serif text-xl font-semibold text-navy dark:text-white">{t('auth.register')}</h2>
+        {/* 注册卡片：使用 glass 玻璃态效果 */}
+        <div className="glass rounded-xl p-8 shadow-xl">
+          <h2 className="font-display mb-6 text-xl font-semibold text-base-100">{t('auth.register')}</h2>
 
-          {/* 注册方式 Tab */}
-          <div className="mb-6 flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
+          {/* 注册方式 Tab - 激活态 bg-nav/20 text-nav-light，非激活态 text-base-400 */}
+          <div className="mb-6 flex rounded-lg bg-base-800/50 p-1">
             <button
               type="button"
               onClick={() => { setRegisterTab('email'); setError(''); setCodeCountdown(0); }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                registerTab === 'email' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                registerTab === 'email' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
               }`}
             >
               <Mail size={16} />
@@ -156,7 +157,7 @@ export default function Register() {
               type="button"
               onClick={() => { setRegisterTab('phone'); setError(''); setCodeCountdown(0); }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                registerTab === 'phone' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                registerTab === 'phone' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
               }`}
             >
               <Smartphone size={16} />
@@ -164,23 +165,24 @@ export default function Register() {
             </button>
           </div>
 
+          {/* 错误提示 - bg-neg/10 text-neg-light */}
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+            <div className="mb-4 rounded-lg bg-neg/10 px-4 py-3 text-sm text-neg-light">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.fullName')}</label>
+              <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.fullName')}</label>
               <div className="relative">
-                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => updateField('name', e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                  className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                   placeholder={t('auth.namePlaceholder')}
                 />
               </div>
@@ -188,30 +190,30 @@ export default function Register() {
 
             {registerTab === 'email' ? (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.email')}</label>
+                <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.email')}</label>
                 <div className="relative">
-                  <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                  <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => updateField('email', e.target.value)}
                     required
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                    className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                     placeholder={t('auth.emailPlaceholder')}
                   />
                 </div>
               </div>
             ) : (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.phone')}</label>
+                <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.phone')}</label>
                 <div className="relative">
-                  <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                  <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={(e) => updateField('phone', e.target.value.replace(/\D/g, '').slice(0, 11))}
                     required
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                    className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                     placeholder={t('auth.phonePlaceholder')}
                   />
                 </div>
@@ -220,25 +222,26 @@ export default function Register() {
 
             {/* 验证码 */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.verificationCode')}</label>
+              <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.verificationCode')}</label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                  <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                   <input
                     type="text"
                     value={form.verificationCode}
                     onChange={(e) => updateField('verificationCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
                     required
                     maxLength={6}
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm tracking-widest focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                    className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm tracking-widest text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                     placeholder={t('auth.verificationCodePlaceholder')}
                   />
                 </div>
+                {/* 发送验证码按钮 - 次按钮 glass border-base-600 */}
                 <button
                   type="button"
                   onClick={handleSendCode}
                   disabled={codeCountdown > 0 || codeSending || (registerTab === 'email' ? !form.email : !form.phone)}
-                  className="shrink-0 rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="glass shrink-0 rounded-xl border-base-600 px-4 py-2.5 text-sm font-medium text-base-100 transition-colors hover:border-action disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap"
                 >
                   {codeSending
                     ? '...'
@@ -250,35 +253,35 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.institution')}</label>
+              <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.institution')}</label>
               <div className="relative">
-                <Building2 size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                <Building2 size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                 <input
                   type="text"
                   value={form.institution}
                   onChange={(e) => updateField('institution', e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                  className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                   placeholder={t('auth.institutionPlaceholder')}
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.password')}</label>
+              <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.password')}</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => updateField('password', e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                  className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                   placeholder={t('auth.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200"
                   title={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -287,21 +290,21 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.confirmPassword')}</label>
+              <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.confirmPassword')}</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={form.confirmPassword}
                   onChange={(e) => updateField('confirmPassword', e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                  className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                   placeholder={t('auth.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200"
                   title={showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -309,18 +312,19 @@ export default function Register() {
               </div>
             </div>
 
+            {/* 主提交按钮 - glow-btn text-white */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-cyan py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50"
+              className="glow-btn w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50"
             >
               {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-6 text-center text-sm text-base-400">
             {t('auth.hasAccount')}{' '}
-            <Link to="/login" className="font-medium text-cyan hover:underline dark:text-cyan-400">
+            <Link to="/login" className="font-medium text-pos-light hover:underline">
               {t('auth.goToLogin')}
             </Link>
           </p>

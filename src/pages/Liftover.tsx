@@ -213,28 +213,29 @@ export default function Liftover() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('liftover.title')}</h1>
+      {/* 页面标题 - 使用 font-display (Manrope) 字体 */}
+      <div className="animate-fade-in">
+        <h1 className="font-display text-2xl font-bold text-white">{t('liftover.title')}</h1>
       </div>
 
-      {/* 说明 */}
-      <div className="rounded-xl bg-blue-50 p-4 text-sm text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+      {/* 说明 - 使用 pos 翠绿色系信息提示 */}
+      <div className="glass rounded-xl border-pos/10 p-4 text-sm text-pos-light animate-fade-in">
         <p>{t('liftover.description')}</p>
-        <p className="mt-1 text-xs text-blue-500 dark:text-blue-400">{t('liftover.poweredBy')}</p>
+        <p className="mt-1 text-xs text-pos-dark">{t('liftover.poweredBy')}</p>
       </div>
 
-      {/* 输入区域 */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('liftover.inputVariant')}</h2>
+      {/* 输入区域 - 玻璃态卡片 */}
+      <div className="glass p-6 animate-fade-in">
+        <h2 className="mb-4 font-display text-lg font-semibold text-white">{t('liftover.inputVariant')}</h2>
 
         {/* 基因组版本选择 */}
         <div className="mb-6 flex items-center gap-4">
           <div className="flex-1">
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.sourceGenome')}</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.sourceGenome')}</label>
             <select
               value={fromGenome}
               onChange={(e) => { setFromGenome(e.target.value); setResult(null); }}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white px-3 py-2 text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             >
               <option value="hg38">{genomeLabel('hg38')}</option>
               <option value="hg19">{genomeLabel('hg19')}</option>
@@ -244,18 +245,18 @@ export default function Liftover() {
 
           <button
             onClick={swapGenomes}
-            className="mt-5 rounded-lg border border-gray-300 dark:border-gray-600 p-2 text-gray-500 dark:text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-cyan dark:hover:text-cyan-400"
+            className="glass border-base-600 mt-5 rounded-lg p-2 text-base-400 transition-colors hover:bg-base-700/50 hover:text-pos"
             title={t('liftover.swap')}
           >
             <ArrowRightLeft size={18} />
           </button>
 
           <div className="flex-1">
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.targetGenome')}</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.targetGenome')}</label>
             <select
               value={destGenome}
               onChange={(e) => { setDestGenome(e.target.value); setResult(null); }}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white px-3 py-2 text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             >
               <option value="hg19">{genomeLabel('hg19')}</option>
               <option value="hg38">{genomeLabel('hg38')}</option>
@@ -264,76 +265,76 @@ export default function Liftover() {
           </div>
         </div>
 
-        {/* 粘贴输入 */}
+        {/* 粘贴输入 - 统一输入框样式 */}
         <div className="mb-4">
-          <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.pasteInput')}</label>
+          <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.pasteInput')}</label>
           <input
             type="text"
             value={pasteText}
             onChange={(e) => parseAndFill(e.target.value)}
             placeholder={t('liftover.pastePlaceholder')}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan"
+            className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white placeholder-base-500 px-3 py-2 font-mono text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
           />
-          <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{t('liftover.pasteHint')}</p>
+          <p className="mt-1 text-xs text-base-500">{t('liftover.pasteHint')}</p>
         </div>
 
-        {/* 变异输入 */}
+        {/* 变异输入 - 四个字段网格 */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.chromosome')} *</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.chromosome')} *</label>
             <input
               type="text"
               value={chr}
               onChange={(e) => setChr(e.target.value)}
               placeholder="17"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white placeholder-base-500 px-3 py-2 text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.position')} *</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.position')} *</label>
             <input
               type="number"
               value={pos}
               onChange={(e) => setPos(e.target.value)}
               placeholder="41244651"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white placeholder-base-500 px-3 py-2 text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.refAllele')} *</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.refAllele')} *</label>
             <input
               type="text"
               value={ref}
               onChange={(e) => setRef(e.target.value)}
               placeholder="A"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white placeholder-base-500 px-3 py-2 font-mono text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.altAllele')} *</label>
+            <label className="mb-1 block text-xs font-medium text-base-400">{t('liftover.altAllele')} *</label>
             <input
               type="text"
               value={alt}
               onChange={(e) => setAlt(e.target.value)}
               placeholder="T"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 text-white placeholder-base-500 px-3 py-2 font-mono text-sm focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
             />
           </div>
         </div>
 
-        {/* 转换按钮 */}
+        {/* 转换按钮 - 主按钮 glow-btn，次按钮 glass */}
         <div className="mt-4 flex items-center gap-3">
           <button
             onClick={handleLiftover}
             disabled={loading || !chr || !pos || !ref || !alt}
-            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="glow-btn inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : <ArrowRightLeft size={16} />}
             {loading ? t('liftover.converting') : t('liftover.convert')}
           </button>
           <button
             onClick={clearInput}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="glass border-base-600 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm text-base-300 transition-colors hover:bg-base-700/50"
           >
             <X size={16} />
             {t('liftover.clearInput')}
@@ -341,85 +342,86 @@ export default function Liftover() {
         </div>
       </div>
 
-      {/* 错误提示 */}
+      {/* 错误提示 - 使用 neg 玫瑰红色系 */}
       {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+        <div className="flex items-center gap-2 rounded-xl bg-neg/10 px-4 py-3 text-sm text-neg-light animate-fade-in">
           <AlertCircle size={16} />
           {error}
         </div>
       )}
 
-      {/* 结果区域 */}
+      {/* 结果区域 - 玻璃态卡片 */}
       {result && (
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
+        <div className="glass p-6 animate-fade-in">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-serif text-lg font-semibold text-navy dark:text-white">{t('liftover.result')}</h2>
+            <h2 className="font-display text-lg font-semibold text-white">{t('liftover.result')}</h2>
             {result.variants?.length > 0 && (
               <button
                 onClick={copyResult}
-                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="glass border-base-600 inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-base-300 hover:bg-base-700/50"
               >
-                {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                {copied ? <Check size={14} className="text-pos" /> : <Copy size={14} />}
                 {copied ? t('liftover.copied') : t('liftover.copy')}
               </button>
             )}
           </div>
 
-          {/* 转换方向 */}
-          <div className="mb-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+          {/* 转换方向 - 使用 base/pos 色系标签 */}
+          <div className="mb-4 flex items-center gap-2 text-sm text-base-400">
+            <span className="rounded-full bg-base-700 px-2 py-0.5 text-xs font-medium text-pos-light">
               {genomeLabel(result.from)}
             </span>
             <ArrowRightLeft size={14} />
-            <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+            <span className="rounded-full bg-base-700 px-2 py-0.5 text-xs font-medium text-pos-light">
               {genomeLabel(result.dest)}
             </span>
           </div>
 
           {result.error ? (
-            <div className="flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-3 text-sm text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+            <div className="flex items-center gap-2 rounded-lg bg-warn/10 px-4 py-3 text-sm text-warn">
               <AlertCircle size={16} />
               {result.error}
             </div>
           ) : result.variants?.length > 0 ? (
             <div className="space-y-3">
+              {/* 成功结果 - 使用 pos 翠绿色系 */}
               {result.variants.map((v, i) => (
-                <div key={i} className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/30">
+                <div key={i} className="rounded-lg border border-pos-dark bg-pos/10 p-4">
                   <div className="mb-2 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-green-600" />
-                    <span className="text-sm font-medium text-green-800 dark:text-green-400">{t('liftover.success')}</span>
+                    <CheckCircle2 size={16} className="text-pos" />
+                    <span className="text-sm font-medium text-pos-light">{t('liftover.success')}</span>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {v.chr !== undefined && (
                       <div>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.chromosome')}</p>
-                        <p className="font-mono text-sm text-navy dark:text-white">{v.chr}</p>
+                        <p className="text-xs font-medium text-base-400">{t('liftover.chromosome')}</p>
+                        <p className="font-mono text-sm text-white">{v.chr}</p>
                       </div>
                     )}
                     {v.pos !== undefined && (
                       <div>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.position')}</p>
-                        <p className="font-mono text-sm text-navy dark:text-white">{Number(v.pos)}</p>
+                        <p className="text-xs font-medium text-base-400">{t('liftover.position')}</p>
+                        <p className="font-mono text-sm text-white">{Number(v.pos)}</p>
                       </div>
                     )}
                     {v.ref !== undefined && (
                       <div>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.refAllele')}</p>
-                        <p className="font-mono text-sm text-navy dark:text-white">{v.ref}</p>
+                        <p className="text-xs font-medium text-base-400">{t('liftover.refAllele')}</p>
+                        <p className="font-mono text-sm text-white">{v.ref}</p>
                       </div>
                     )}
                     {v.alt !== undefined && (
                       <div>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.altAllele')}</p>
-                        <p className="font-mono text-sm text-navy dark:text-white">{v.alt}</p>
+                        <p className="text-xs font-medium text-base-400">{t('liftover.altAllele')}</p>
+                        <p className="font-mono text-sm text-white">{v.alt}</p>
                       </div>
                     )}
                   </div>
                   {/* 显示其他字段 */}
                   {Object.entries(v).filter(([k]) => !['chr', 'pos', 'ref', 'alt'].includes(k)).length > 0 && (
-                    <div className="mt-3 border-t border-green-200 dark:border-green-800 pt-3">
-                      <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">{t('liftover.additionalInfo')}</p>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                    <div className="mt-3 border-t border-pos-dark pt-3">
+                      <p className="mb-1 text-xs font-medium text-base-400">{t('liftover.additionalInfo')}</p>
+                      <div className="text-xs text-base-400">
                         {Object.entries(v)
                           .filter(([k]) => !['chr', 'pos', 'ref', 'alt'].includes(k))
                           .map(([k, val]) => (
@@ -434,24 +436,24 @@ export default function Liftover() {
               ))}
             </div>
           ) : (
-            <div className="rounded-lg bg-yellow-50 px-4 py-3 text-sm text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+            <div className="rounded-lg bg-warn/10 px-4 py-3 text-sm text-warn">
               {t('liftover.noResult')}
             </div>
           )}
         </div>
       )}
 
-      {/* 查询历史记录 */}
+      {/* 查询历史记录 - 玻璃态卡片 */}
       {history.length > 0 && (
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
+        <div className="glass p-6 animate-fade-in">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 font-serif text-lg font-semibold text-navy dark:text-white">
+            <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-white">
               <History size={18} />
               {t('liftover.history')}
             </h2>
             <button
               onClick={clearHistory}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 hover:border-red-300 dark:hover:border-red-800"
+              className="glass border-base-600 inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-base-400 hover:bg-neg/10 hover:text-neg-light hover:border-neg"
             >
               <Trash2 size={12} />
               {t('liftover.clearHistory')}
@@ -462,30 +464,30 @@ export default function Liftover() {
             {history.map((entry) => (
               <div
                 key={entry.id}
-                className="group flex items-center gap-3 rounded-lg border border-gray-100 dark:border-gray-700 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="group flex items-center gap-3 rounded-lg border border-base-700 px-4 py-3 transition-colors hover:bg-base-700/30"
               >
                 {/* 输入信息 */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="font-mono font-medium text-navy dark:text-white">
+                    <span className="font-mono font-medium text-white">
                       {entry.input.chr}:{Number(entry.input.pos)}:{entry.input.ref}:{entry.input.alt}
                     </span>
-                    <ArrowRightLeft size={12} className="text-gray-400 dark:text-gray-500" />
-                    <span className="font-mono font-medium text-navy dark:text-white">
+                    <ArrowRightLeft size={12} className="text-base-500" />
+                    <span className="font-mono font-medium text-white">
                       {entry.output
                         ? `${entry.output.chr || ''}:${entry.output.pos ? Number(entry.output.pos) : ''}:${entry.output.ref || ''}:${entry.output.alt || ''}`
                         : '—'}
                     </span>
                     {entry.error && (
-                      <span className="text-xs text-red-500 dark:text-red-400">({entry.error})</span>
+                      <span className="text-xs text-neg-light">({entry.error})</span>
                     )}
                   </div>
-                  <div className="mt-1 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-                    <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                  <div className="mt-1 flex items-center gap-2 text-xs text-base-500">
+                    <span className="rounded-full bg-base-700 px-1.5 py-0.5 text-pos-light">
                       {genomeLabel(entry.input.from)}
                     </span>
                     <span>→</span>
-                    <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                    <span className="rounded-full bg-base-700 px-1.5 py-0.5 text-pos-light">
                       {genomeLabel(entry.input.dest)}
                     </span>
                     <span className="ml-2">{new Date(entry.timestamp).toLocaleString()}</span>
@@ -495,7 +497,7 @@ export default function Liftover() {
                 {/* 重新查询按钮 */}
                 <button
                   onClick={() => restoreFromHistory(entry)}
-                  className="flex-shrink-0 rounded-lg p-1.5 text-gray-400 opacity-0 transition-all hover:bg-cyan-50 dark:hover:bg-cyan-900/30 hover:text-cyan dark:hover:text-cyan-400 group-hover:opacity-100"
+                  className="flex-shrink-0 rounded-lg p-1.5 text-base-400 opacity-0 transition-all hover:bg-pos/10 hover:text-pos group-hover:opacity-100"
                   title={t('liftover.restore')}
                 >
                   <RotateCcw size={14} />

@@ -7,12 +7,13 @@ import { useI18n } from '@/hooks/useI18n';
 
 const ACMG_CLASSES = ['Pathogenic', 'Likely Pathogenic', 'VUS', 'Likely Benign', 'Benign'] as const;
 
+/* ACMG 分类按钮渐变色 - 使用 CSS 中定义的渐变类 */
 const ACMG_CLASS_COLORS: Record<string, string> = {
-  'Pathogenic': 'bg-acmg-pathogenic text-white',
-  'Likely Pathogenic': 'bg-acmg-likelyPathogenic text-white',
-  'VUS': 'bg-acmg-vus text-white',
-  'Likely Benign': 'bg-acmg-likelyBenign text-white',
-  'Benign': 'bg-acmg-benign text-white',
+  'Pathogenic': 'acmg-pathogenic text-white',
+  'Likely Pathogenic': 'acmg-likely-pathogenic text-white',
+  'VUS': 'acmg-vus text-white',
+  'Likely Benign': 'acmg-likely-benign text-white',
+  'Benign': 'acmg-benign text-white',
 };
 
 const EVIDENCE_CATEGORIES = [
@@ -103,122 +104,125 @@ export default function VariantNew() {
   };
 
   return (
-    <div className="space-y-6">
+    /* 主容器 - 添加入场淡入动画 */
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('variantNew.title')}</h1>
+        {/* 页面标题 - 使用 font-display 字体 */}
+        <h1 className="font-display text-2xl font-bold text-base dark:text-white">{t('variantNew.title')}</h1>
         <button
           onClick={() => navigate('/variants')}
-          className="inline-flex items-center gap-1 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="inline-flex items-center gap-1 rounded-lg border border-base-600 dark:border-base-600 px-3 py-2 text-sm text-base-700 dark:text-base-300 hover:bg-base-800/30 dark:hover:bg-base-700"
         >
           <X size={14} />
           {t('common.cancel')}
         </button>
       </div>
 
+      {/* 错误提示 - 使用 neg 色系 */}
       {error && (
-        <div className="rounded-lg bg-red-50 dark:bg-red-900/30 px-4 py-3 text-sm text-red-700 dark:text-red-400">{error}</div>
+        <div className="rounded-lg bg-neg/10 dark:bg-neg/10 px-4 py-3 text-sm text-neg-light dark:text-neg-light">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Info */}
-        <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-sm">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.basicInfo')}</h2>
+        {/* 基本信息 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.basicInfo')}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.chromosome')} *</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.chromosome')} *</label>
               <input
                 type="text"
                 value={form.chromosome}
                 onChange={(e) => updateField('chromosome', e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.chromosomePlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.position')} *</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.position')} *</label>
               <input
                 type="number"
                 value={form.position || ''}
                 onChange={(e) => updateField('position', Number(e.target.value))}
                 required
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.positionPlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.refAllele')} *</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.refAllele')} *</label>
               <input
                 type="text"
                 value={form.ref_allele}
                 onChange={(e) => updateField('ref_allele', e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.refAllelePlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.altAllele')} *</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.altAllele')} *</label>
               <input
                 type="text"
                 value={form.alt_allele}
                 onChange={(e) => updateField('alt_allele', e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.altAllelePlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.gene')} *</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.gene')} *</label>
               <input
                 type="text"
                 value={form.gene}
                 onChange={(e) => updateField('gene', e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.genePlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.transcript')}</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.transcript')}</label>
               <input
                 type="text"
                 value={form.transcript}
                 onChange={(e) => updateField('transcript', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.transcriptPlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.cdnaChange')}</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.cdnaChange')}</label>
               <input
                 type="text"
                 value={form.cdna_change}
                 onChange={(e) => updateField('cdna_change', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.cdnaPlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.proteinChange')}</label>
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.proteinChange')}</label>
               <input
                 type="text"
                 value={form.protein_change}
                 onChange={(e) => updateField('protein_change', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 font-mono text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 font-mono text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
                 placeholder={t('variantNew.proteinPlaceholder')}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.genomeBuild')}</label>
-              <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+              <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.genomeBuild')}</label>
+              <div className="flex rounded-lg border border-base-600 dark:border-base-600 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => updateField('genome_build', 'GRCh38')}
                   className={`flex-1 px-3 py-2 text-sm font-semibold transition-colors ${
                     form.genome_build === 'GRCh38'
-                      ? 'bg-cyan text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+                      ? 'bg-pos text-white'
+                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 hover:bg-base-700'
                   }`}
                 >
                   GRCh38
@@ -226,10 +230,10 @@ export default function VariantNew() {
                 <button
                   type="button"
                   onClick={() => updateField('genome_build', 'GRCh37')}
-                  className={`flex-1 px-3 py-2 text-sm font-semibold transition-colors border-l border-gray-300 dark:border-gray-600 ${
+                  className={`flex-1 px-3 py-2 text-sm font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
                     form.genome_build === 'GRCh37'
-                      ? 'bg-cyan text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+                      ? 'bg-pos text-white'
+                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 hover:bg-base-700'
                   }`}
                 >
                   GRCh37
@@ -238,20 +242,20 @@ export default function VariantNew() {
             </div>
           </div>
           <div className="mt-4">
-            <label className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">{t('common.notes')}</label>
+            <label className="mb-1 block text-xs font-medium text-base-500 dark:text-base-400">{t('common.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => updateField('notes', e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-3 py-2 text-sm focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
               placeholder={t('variantNew.notesPlaceholder')}
             />
           </div>
         </div>
 
-        {/* ACMG Classification */}
-        <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-sm">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.acmgClassification')}</h2>
+        {/* ACMG 分类 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.acmgClassification')}</h2>
           <div className="flex flex-wrap gap-2">
             {ACMG_CLASSES.map((cls) => (
               <button
@@ -261,7 +265,7 @@ export default function VariantNew() {
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   form.acmg_class === cls
                     ? ACMG_CLASS_COLORS[cls]
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-base-800 text-base-600 hover:bg-base-700 dark:bg-base-700 dark:text-base-300 hover:bg-base-600'
                 }`}
               >
                 {cls}
@@ -270,32 +274,32 @@ export default function VariantNew() {
           </div>
         </div>
 
-        {/* ACMG Evidence */}
-        <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-sm">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.acmgEvidence')}</h2>
+        {/* ACMG 证据 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.acmgEvidence')}</h2>
           <div className="space-y-6">
             {EVIDENCE_CATEGORIES.map((category) => (
               <div key={category.labelKey}>
-                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t(category.labelKey)}</h3>
+                <h3 className="mb-2 text-sm font-semibold text-base-700 dark:text-base-300">{t(category.labelKey)}</h3>
                 <div className="space-y-2">
                   {category.codes.map((code) => {
                     const evidence = evidences.find((e) => e.code === code);
                     return (
-                      <div key={code} className="flex items-start gap-3 rounded-lg border border-gray-100 dark:border-gray-700 p-3">
+                      <div key={code} className="flex items-start gap-3 rounded-lg border border-base-800 dark:border-base-700 p-3">
                         <input
                           type="checkbox"
                           checked={evidence?.checked || false}
                           onChange={() => toggleEvidence(code)}
-                          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-cyan focus:ring-cyan"
+                          className="mt-0.5 h-4 w-4 rounded border-base-600 text-pos focus:ring-pos"
                         />
                         <div className="flex-1">
-                          <span className="font-mono text-sm font-semibold text-navy dark:text-white">{code}</span>
+                          <span className="font-mono text-sm font-semibold text-base dark:text-white">{code}</span>
                           <textarea
                             value={evidence?.description || ''}
                             onChange={(e) => updateEvidenceDesc(code, e.target.value)}
                             rows={1}
                             placeholder={t('variantDetail.descriptionPlaceholder')}
-                            className="mt-1 w-full rounded border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 px-2 py-1 text-xs focus:border-cyan dark:focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:ring-cyan-400"
+                            className="mt-1 w-full rounded border border-base-700 bg-base-800/50 px-2 py-1 text-xs text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-1 focus:ring-action/20 dark:border-base-700 dark:bg-base-800/50 dark:text-white dark:placeholder-base-400"
                           />
                         </div>
                       </div>
@@ -307,12 +311,13 @@ export default function VariantNew() {
           </div>
         </div>
 
-        {/* Submit */}
+        {/* 提交按钮区 */}
         <div className="flex items-center gap-3">
+          {/* 创建按钮 - 发光按钮样式 */}
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50"
+            className="glow-btn inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
           >
             <Save size={16} />
             {saving ? t('variantNew.creating') : t('variantNew.createVariant')}
@@ -320,7 +325,7 @@ export default function VariantNew() {
           <button
             type="button"
             onClick={() => navigate('/variants')}
-            className="rounded-lg border border-gray-300 dark:border-gray-600 px-6 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="rounded-lg border border-base-600 dark:border-base-600 px-6 py-2.5 text-sm font-medium text-base-700 dark:text-base-300 hover:bg-base-800/30 dark:hover:bg-base-700"
           >
             {t('common.cancel')}
           </button>

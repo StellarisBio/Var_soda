@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 import { getDb } from '../database.js'
 import { authenticate, generateToken } from '../middleware/auth.js'
@@ -17,18 +18,24 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true })
 }
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, uploadsDir)
-  },
-  filename: (req: any, file, cb) => {
-    const ext = path.extname(file.originalname)
-    cb(null, `user_${req.user!.id}_${Date.now()}${ext}`)
-  },
-})
+/**
+ * 验证文件内容是否为有效图片（通过魔数）
+ */
+function isValidImageMagic(buf: Buffer): boolean {
+  if (buf.length < 3) return false
+  // JPEG (FF D8 FF)
+  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return true
+  // PNG (89 50 4E 47)
+  if (buf.length >= 4 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return true
+  // GIF (47 49 46 38)
+  if (buf.length >= 4 && buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x38) return true
+  // WebP (RIFF....WEBP)
+  if (buf.length >= 12 && buf.slice(0, 4).toString() === 'RIFF' && buf.slice(8, 12).toString() === 'WEBP') return true
+  return false
+}
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
@@ -122,6 +129,7 @@ router.post('/register', (req: Request, res: Response): void => {
       email: user.email,
       name: user.name,
       role: user.role,
+      tokenVersion: user.token_version || 0,
     })
 
     res.status(201).json({ success: true, data: { user: toPublicUser(user), token } })
@@ -168,6 +176,7 @@ router.post('/login', (req: Request, res: Response): void => {
         email: user.email,
         name: user.name,
         role: user.role,
+        tokenVersion: user.token_version || 0,
       })
 
       res.json({ success: true, data: { user: toPublicUser(user), token } })
@@ -201,6 +210,7 @@ router.post('/login', (req: Request, res: Response): void => {
       email: user.email,
       name: user.name,
       role: user.role,
+      tokenVersion: user.token_version || 0,
     })
 
     res.json({ success: true, data: { user: toPublicUser(user), token } })
@@ -232,24 +242,44 @@ router.get('/me', authenticate, (req: Request, res: Response): void => {
 router.put('/profile', authenticate, (req: Request, res: Response): void => {
   try {
     const db = getDb()
-    const { name, institution, phone } = req.body
+    const { name, institution, phone, verificationCode } = req.body
 
     if (!name) {
       res.status(400).json({ success: false, error: '姓名不能为空' })
       return
     }
 
-    // 如果修改手机号，检查是否已被其他用户使用
+    // 如果修改手机号，必须提供验证码
+    let phoneToUpdate: string | null = null
     if (phone) {
+      if (!verificationCode) {
+        res.status(400).json({ success: false, error: '修改手机号需要验证码' })
+        return
+      }
+
+      // 验证验证码
+      const record = db.prepare(
+        "SELECT * FROM verification_codes WHERE target = ? AND code = ? AND type = 'phone' AND purpose = 'login' AND used = 0 AND expires_at > datetime('now') ORDER BY created_at DESC LIMIT 1"
+      ).get(phone, verificationCode) as any
+
+      if (!record) {
+        res.status(400).json({ success: false, error: '验证码无效或已过期' })
+        return
+      }
+
+      db.prepare('UPDATE verification_codes SET used = 1 WHERE id = ?').run(record.id)
+
+      // 检查是否已被其他用户使用
       const existing = db.prepare('SELECT id FROM users WHERE phone = ? AND id != ?').get(phone, req.user!.id)
       if (existing) {
         res.status(409).json({ success: false, error: '该手机号已被其他用户使用' })
         return
       }
+      phoneToUpdate = phone
     }
 
     db.prepare("UPDATE users SET name = ?, institution = ?, phone = ?, updated_at = datetime('now') WHERE id = ?")
-      .run(name, institution || null, phone || null, req.user!.id)
+      .run(name, institution || null, phoneToUpdate, req.user!.id)
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user!.id) as any
     res.json({ success: true, data: toPublicUser(user) })
@@ -288,7 +318,7 @@ router.put('/change-password', authenticate, (req: Request, res: Response): void
     }
 
     const passwordHash = bcrypt.hashSync(newPassword, 10)
-    db.prepare("UPDATE users SET password_hash = ?, updated_at = datetime('now') WHERE id = ?")
+    db.prepare("UPDATE users SET password_hash = ?, token_version = token_version + 1, updated_at = datetime('now') WHERE id = ?")
       .run(passwordHash, req.user!.id)
 
     res.json({ success: true, message: '密码修改成功' })
@@ -346,7 +376,7 @@ router.post('/reset-password', (req: Request, res: Response): void => {
     }
 
     const passwordHash = bcrypt.hashSync(newPassword, 10)
-    db.prepare("UPDATE users SET password_hash = ?, updated_at = datetime('now') WHERE id = ?")
+    db.prepare("UPDATE users SET password_hash = ?, token_version = token_version + 1, updated_at = datetime('now') WHERE id = ?")
       .run(passwordHash, user.id)
 
     res.json({ success: true, message: '密码重置成功' })
@@ -365,12 +395,27 @@ router.post('/avatar', authenticate, upload.single('avatar'), (req: Request, res
       return
     }
 
-    const db = getDb()
-    const avatarPath = `/uploads/avatars/${req.file.filename}`
+    // 验证文件内容是否为有效图片（通过魔数）
+    if (!isValidImageMagic(req.file.buffer)) {
+      res.status(400).json({ success: false, error: '文件内容不是有效的图片' })
+      return
+    }
 
+    const db = getDb()
+
+    // 使用随机 UUID 作为文件名，避免泄露 user id
+    const ext = path.extname(req.file.originalname).toLowerCase()
+    const filename = `${crypto.randomUUID()}${ext}`
+    const filepath = path.join(uploadsDir, filename)
+    fs.writeFileSync(filepath, req.file.buffer)
+
+    const avatarPath = `/uploads/avatars/${filename}`
+
+    // 删除旧头像（使用 basename 防止路径遍历）
     const oldUser = db.prepare('SELECT avatar FROM users WHERE id = ?').get(req.user!.id) as any
     if (oldUser?.avatar) {
-      const oldFilePath = path.join(__dirname, '..', '..', oldUser.avatar)
+      const oldFilename = path.basename(oldUser.avatar)
+      const oldFilePath = path.join(uploadsDir, oldFilename)
       if (fs.existsSync(oldFilePath)) {
         fs.unlinkSync(oldFilePath)
       }

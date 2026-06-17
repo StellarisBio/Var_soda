@@ -156,20 +156,24 @@ export default function Variants() {
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div className="space-y-6">
+    /* 主容器 - 添加入场淡入动画 */
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('variants.title')}</h1>
+        {/* 页面标题 - 使用 font-display 字体 */}
+        <h1 className="font-display text-2xl font-bold text-base dark:text-white">{t('variants.title')}</h1>
         <div className="flex items-center gap-2">
+          {/* 导入按钮 - 玻璃态边框风格，使用 pos 色调 */}
           <button
             onClick={openImportModal}
-            className="inline-flex items-center gap-2 rounded-lg border border-cyan bg-white px-4 py-2 text-sm font-semibold text-cyan transition-colors hover:bg-cyan-50 dark:bg-gray-800 dark:text-cyan-400 dark:border-cyan-800 dark:hover:bg-gray-700"
+            className="inline-flex items-center gap-2 rounded-lg border border-pos bg-base-800/50 px-4 py-2 text-sm font-semibold text-pos transition-colors hover:bg-pos/10 dark:text-pos-light dark:border-pos-dark dark:hover:bg-base-700"
           >
             <Upload size={16} />
             {t('variants.batchImport')}
           </button>
+          {/* 新建按钮 - 发光按钮样式 */}
           <Link
             to="/variants/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-cyan-600"
+            className="glow-btn inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white"
           >
             <Plus size={16} />
             {t('variants.newVariant')}
@@ -177,76 +181,79 @@ export default function Variants() {
         </div>
       </div>
 
-      {/* Search bar */}
+      {/* 搜索栏 - 使用新输入框样式，focus 使用 action 色调 */}
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('variants.searchPlaceholderNew')}
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-9 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+            className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-9 text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
           />
           {search && (
             <button
               type="button"
               onClick={() => { setSearch(''); setPage(1); }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-600 dark:hover:text-gray-300"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-base-400 hover:bg-base-700 hover:text-base-300 dark:hover:bg-base-600 dark:hover:text-base-300"
             >
               <X size={14} />
             </button>
           )}
         </div>
+        {/* 搜索按钮 - 深色风格 */}
         <button
           type="submit"
-          className="rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500"
+          className="rounded-lg bg-base px-4 py-2.5 text-sm font-medium text-white hover:bg-base-600 dark:bg-base-600 dark:hover:bg-base-500"
         >
           {t('common.search')}
         </button>
       </form>
 
-      {/* Filters */}
+      {/* 筛选器 */}
       <div className="flex flex-wrap items-center gap-3">
-        {/* GRCh38/GRCh37 切换 */}
-        <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+        {/* GRCh38/GRCh37 切换 - 选中使用 pos 色调 */}
+        <div className="flex rounded-lg border border-base-600 dark:border-base-600 overflow-hidden">
           <button
             onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh38' ? '' : 'GRCh38'); setPage(1); }}
             className={`px-3 py-2 text-xs font-semibold transition-colors ${
               genomeBuildFilter === 'GRCh38'
-                ? 'bg-cyan text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                ? 'bg-pos text-white'
+                : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 dark:hover:bg-base-700'
             }`}
           >
             GRCh38
           </button>
           <button
             onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh37' ? '' : 'GRCh37'); setPage(1); }}
-            className={`px-3 py-2 text-xs font-semibold transition-colors border-l border-gray-300 dark:border-gray-600 ${
+            className={`px-3 py-2 text-xs font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
               genomeBuildFilter === 'GRCh37'
-                ? 'bg-cyan text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                ? 'bg-pos text-white'
+                : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 dark:hover:bg-base-700'
             }`}
           >
             GRCh37
           </button>
         </div>
+        {/* ACMG 筛选下拉框 - focus 使用 action 色调 */}
         <select
           value={acmgFilter}
           onChange={(e) => { setAcmgFilter(e.target.value); setPage(1); }}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-          >
-            <option value="">{t('variants.allAcmg')}</option>
+          className="rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white"
+        >
+          <option value="">{t('variants.allAcmg')}</option>
           {ACMG_OPTIONS.filter(Boolean).map((opt) => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
+        {/* 状态筛选下拉框 - focus 使用 action 色调 */}
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-          >
-            <option value="">{t('variants.allStatus')}</option>
+          className="rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white"
+        >
+          <option value="">{t('variants.allStatus')}</option>
           {STATUS_OPTIONS.filter(Boolean).map((opt) => (
             <option key={opt} value={opt}>{t(`statusBadge.${opt}`)}</option>
           ))}
@@ -257,13 +264,13 @@ export default function Variants() {
             value={geneFilter}
             onChange={(e) => setGeneFilter(e.target.value)}
             placeholder={t('variants.filterByGene')}
-            className="rounded-lg border border-gray-300 px-3 py-2 pr-8 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+            className="rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 pr-8 text-sm text-white placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:placeholder-base-400"
           />
           {geneFilter && (
             <button
               type="button"
               onClick={() => { setGeneFilter(''); setPage(1); }}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-600 dark:hover:text-gray-300"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-base-400 hover:bg-base-700 hover:text-base-300 dark:hover:bg-base-600 dark:hover:text-base-300"
             >
               <X size={12} />
             </button>
@@ -271,58 +278,60 @@ export default function Variants() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm dark:bg-gray-800">
+      {/* 变异表格 - 玻璃态卡片 */}
+      <div className="overflow-x-auto glass rounded-2xl animate-fade-in">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chrPos')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.transcript')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.refAllele')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.altAllele')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmgEvidence')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
-              <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
+            {/* 表头 - 深色半透明背景 */}
+            <tr className="border-b border-base-700 bg-base-800/50">
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.gene')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.chrPos')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.transcript')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.refAllele')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.altAllele')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.cdna')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.protein')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.genomeBuild')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.acmgEvidence')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.acmg')}</th>
+              <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('common.status')}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={11} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={11} className="px-4 py-12 text-center text-base-400">
                   {t('common.loading')}
                 </td>
               </tr>
             ) : variants.length === 0 ? (
               <tr>
-                <td colSpan={11} className="px-4 py-12 text-center text-gray-400">
+                <td colSpan={11} className="px-4 py-12 text-center text-base-400">
                   {t('common.noData')}
                 </td>
               </tr>
             ) : (
               variants.map((v) => (
-                <tr key={v.id} className="border-b border-gray-50 transition-colors hover:bg-gray-50 dark:border-gray-700/50 dark:hover:bg-gray-700/50">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-cyan dark:text-cyan-400">
+                /* 表格行 - hover 时显示半透明高亮 */
+                <tr key={v.id} className="border-b border-base-800/50 transition-colors hover:bg-base-800/30">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-pos dark:text-pos-light">
                     {v.gene}
                   </td>
                   <td className="px-4 py-3">
-                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-green-600 hover:underline dark:text-green-400">
+                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-pos-dark hover:underline dark:text-pos-light">
                       {v.chromosome}-{Number(v.position)}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.transcript || ''}</td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 font-mono text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">{v.ref_allele}</span></td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-rose-50 px-1.5 py-0.5 font-mono text-xs font-medium text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">{v.alt_allele}</span></td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.transcript || ''}</td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-neg/10 px-1.5 py-0.5 font-mono text-xs font-medium text-neg-dark dark:bg-neg/10 dark:text-neg-light">{v.alt_allele}</span></td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.cdna_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       (v.genome_build || 'GRCh38') === 'GRCh38'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                        ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
+                        : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
                     }`}>
                       {v.genome_build || 'GRCh38'}
                     </span>
@@ -331,13 +340,13 @@ export default function Variants() {
                     {v.evidence_codes && v.evidence_codes.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {v.evidence_codes.map((code) => (
-                          <span key={code} className="inline-flex items-center rounded bg-cyan-50 px-1.5 py-0.5 font-mono text-xs font-medium text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                          <span key={code} className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">
                             {code}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-xs text-gray-400">—</span>
+                      <span className="text-xs text-base-400">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3"><ACMGBadge classification={v.acmg_class} /></td>
@@ -349,27 +358,27 @@ export default function Variants() {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* 分页 */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-base-500 dark:text-base-400">
             {t('variants.showing')} {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} {t('variants.of')} {total}
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="rounded-lg border border-base-600 p-2 text-base-600 hover:bg-base-800/30 disabled:opacity-40 dark:border-base-600 dark:text-base-400 dark:hover:bg-base-700"
             >
               <ChevronLeft size={16} />
             </button>
-            <span className="px-3 text-sm text-gray-600 dark:text-gray-300">
+            <span className="px-3 text-sm text-base-600 dark:text-base-300">
               {t('variants.page')} {page} {t('variants.pageOf')} {totalPages} {t('variants.pages')}
             </span>
             <button
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}
-              className="rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="rounded-lg border border-base-600 p-2 text-base-600 hover:bg-base-800/30 disabled:opacity-40 dark:border-base-600 dark:text-base-400 dark:hover:bg-base-700"
             >
               <ChevronRight size={16} />
             </button>
@@ -377,33 +386,33 @@ export default function Variants() {
         </div>
       )}
 
-      {/* 批量导入弹窗 */}
+      {/* 批量导入弹窗 - 玻璃态设计 */}
       {showImportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800">
+          <div className="glass w-full max-w-lg rounded-2xl p-6 shadow-2xl animate-fade-in">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Upload size={20} className="text-cyan" />
-                <h3 className="font-serif text-lg font-semibold text-navy dark:text-white">{t('variants.importTitle')}</h3>
+                <Upload size={20} className="text-pos" />
+                <h3 className="font-display text-lg font-semibold text-base dark:text-white">{t('variants.importTitle')}</h3>
               </div>
               <button
                 onClick={() => setShowImportModal(false)}
-                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                className="rounded-lg p-1 text-base-400 hover:bg-base-800 hover:text-base-600 dark:hover:bg-base-700 dark:hover:text-base-300"
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* 说明 */}
-            <div className="mb-4 rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+            {/* 说明 - 使用 pos 色系提示框 */}
+            <div className="mb-4 rounded-lg bg-pos/10 px-4 py-3 text-sm text-pos-dark dark:bg-pos/10 dark:text-pos-light">
               <p className="mb-1">{t('variants.importHint')}</p>
               <p>{t('variants.importOptionalCols')}</p>
             </div>
 
-            {/* 下载模板 */}
+            {/* 下载模板链接 */}
             <button
               onClick={downloadTemplate}
-              className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-cyan hover:underline dark:text-cyan-400"
+              className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-pos hover:underline dark:text-pos-light"
             >
               <Download size={14} />
               {t('variants.downloadTemplate')}
@@ -418,13 +427,13 @@ export default function Variants() {
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
                   className={`mb-4 cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
-                    isDragging ? 'border-cyan bg-cyan-50 dark:border-cyan-500 dark:bg-cyan-900/30' : 'border-gray-300 hover:border-cyan hover:bg-gray-50 dark:border-gray-600 dark:hover:border-cyan-600 dark:hover:bg-gray-700'
+                    isDragging ? 'border-pos bg-pos/10 dark:border-pos dark:bg-pos/10' : 'border-base-600 hover:border-pos hover:bg-base-800/30 dark:border-base-600 dark:hover:border-pos dark:hover:bg-base-700'
                   }`}
                 >
-                  <FileText size={32} className="mx-auto mb-3 text-gray-400 dark:text-gray-500" />
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('variants.dragDrop')}</p>
+                  <FileText size={32} className="mx-auto mb-3 text-base-400 dark:text-base-500" />
+                  <p className="text-sm text-base-600 dark:text-base-400">{t('variants.dragDrop')}</p>
                   {importFile && (
-                    <p className="mt-2 text-sm font-medium text-cyan">{importFile.name}</p>
+                    <p className="mt-2 text-sm font-medium text-pos">{importFile.name}</p>
                   )}
                 </div>
                 <input
@@ -437,21 +446,21 @@ export default function Variants() {
               </>
             )}
 
-            {/* 错误提示 */}
+            {/* 错误提示 - 使用 neg 色系 */}
             {importError && (
-              <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+              <div className="mb-4 rounded-lg bg-neg/10 px-4 py-3 text-sm text-neg-light dark:bg-neg/10 dark:text-neg-light">
                 {importError}
               </div>
             )}
 
-            {/* 导入结果 */}
+            {/* 导入结果 - 使用 pos 色系成功提示 */}
             {importResult && (
               <div className="mb-4 space-y-3">
-                <div className="flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 dark:bg-green-900/30">
-                  <CheckCircle size={18} className="text-green-600" />
-                  <span className="text-sm font-medium text-green-700 dark:text-green-400">{t('variants.importSuccess')}</span>
+                <div className="flex items-center gap-2 rounded-lg bg-pos/10 px-4 py-3 dark:bg-pos/10">
+                  <CheckCircle size={18} className="text-pos-dark" />
+                  <span className="text-sm font-medium text-pos-dark dark:text-pos-light">{t('variants.importSuccess')}</span>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-base-600 dark:text-base-400">
                   {t('variants.importResult')
                     .replace('{total}', String(importResult.total))
                     .replace('{imported}', String(importResult.imported))
@@ -459,8 +468,8 @@ export default function Variants() {
                 </p>
                 {importResult.errors.length > 0 && (
                   <div>
-                    <p className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">{t('variants.importErrors')}</p>
-                    <div className="max-h-40 overflow-y-auto rounded-lg bg-red-50 p-3 text-xs text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                    <p className="mb-1 text-sm font-medium text-base-700 dark:text-base-300">{t('variants.importErrors')}</p>
+                    <div className="max-h-40 overflow-y-auto rounded-lg bg-neg/10 p-3 text-xs text-neg-light dark:bg-neg/10 dark:text-neg-light">
                       {importResult.errors.map((err, i) => (
                         <div key={i}>第 {err.row} 行: {err.reason}</div>
                       ))}
@@ -475,7 +484,7 @@ export default function Variants() {
               {importResult ? (
                 <button
                   onClick={() => setShowImportModal(false)}
-                  className="rounded-lg bg-cyan px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-600"
+                  className="glow-btn rounded-lg px-4 py-2 text-sm font-semibold text-white"
                 >
                   {t('common.confirm')}
                 </button>
@@ -483,14 +492,14 @@ export default function Variants() {
                 <>
                   <button
                     onClick={() => setShowImportModal(false)}
-                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                    className="rounded-lg border border-base-600 px-4 py-2 text-sm font-medium text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700"
                   >
                     {t('common.cancel')}
                   </button>
                   <button
                     onClick={handleImport}
                     disabled={!importFile || importing}
-                    className="rounded-lg bg-cyan px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="glow-btn rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {importing ? t('variants.importing') : t('variants.importBtn')}
                   </button>

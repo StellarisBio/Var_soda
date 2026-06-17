@@ -23,3 +23,19 @@ dist-ssr
 *.sln
 *.sw?
 .vite
+
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Database files (contains user data)
+data/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Uploaded files (user PII)
+uploads/

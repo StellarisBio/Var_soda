@@ -107,38 +107,45 @@ export default function Profile() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('profile.title')}</h1>
+    // 页面根容器 - 添加入场动画，居中布局
+    <div className="mx-auto max-w-2xl space-y-6 animate-fade-in">
+      {/* 页面标题 - 使用 font-display (Manrope) 字体 */}
+      <h1 className="font-display text-2xl font-bold text-base-100 dark:text-white">{t('profile.title')}</h1>
 
-      {/* 基本信息 */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('profile.basicInfo')}</h2>
+      {/* 基本信息 - 使用 glass 玻璃态卡片 */}
+      <div className="glass rounded-xl p-6">
+        {/* 卡片标题 - font-display 字体 */}
+        <h2 className="mb-4 font-display text-lg font-semibold text-base-100 dark:text-white">{t('profile.basicInfo')}</h2>
 
+        {/* 消息提示 - helix→pos(翠绿), coral→neg(玫瑰红) 颜色映射 */}
         {profileMsg && (
-          <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${profileMsg.type === 'success' ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+          <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${profileMsg.type === 'success' ? 'bg-pos/10 text-pos dark:bg-pos/20 dark:text-pos-light' : 'bg-neg/10 text-neg dark:bg-neg/20 dark:text-neg-light'}`}>
             {profileMsg.text}
           </div>
         )}
 
-        {/* 头像上传 */}
+        {/* 头像上传区域 */}
         <div className="mb-6 flex items-center gap-4">
           <div className="relative">
             {user?.avatar ? (
+              // 用户头像 - ring-base-700 边框
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="h-20 w-20 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-600"
+                className="h-20 w-20 rounded-full object-cover ring-2 ring-base-700 dark:ring-base-600"
               />
             ) : (
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-cyan-50 text-cyan dark:bg-cyan-900/30 dark:text-cyan-400">
+              // 默认头像 - helix→pos(翠绿) 颜色映射
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-pos/10 text-pos dark:bg-pos/20 dark:text-pos-light">
                 <User size={36} />
               </div>
             )}
+            {/* 头像上传按钮 - 使用 glow-btn 发光按钮类 */}
             <button
               type="button"
               onClick={() => avatarInputRef.current?.click()}
               disabled={avatarUploading}
-              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-cyan text-white shadow-sm hover:bg-cyan-600 disabled:opacity-50"
+              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full glow-btn text-base-900 disabled:opacity-50"
               title={t('profile.changeAvatar')}
             >
               <Camera size={14} />
@@ -152,159 +159,176 @@ export default function Profile() {
             />
           </div>
           <div>
-            <p className="text-sm font-medium text-navy dark:text-white">{t('profile.avatar')}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">{t('profile.avatarHint')}</p>
+            {/* 头像标签 - navy→base 颜色映射 */}
+            <p className="text-sm font-medium text-base-100 dark:text-white">{t('profile.avatar')}</p>
+            {/* 提示文字 - gray-400→base-400 颜色映射 */}
+            <p className="text-xs text-base-400 dark:text-base-500">{t('profile.avatarHint')}</p>
+            {/* 加载状态 - cyan→helix→pos 颜色映射 */}
             {avatarUploading && (
-              <p className="mt-1 text-xs text-cyan dark:text-cyan-400">{t('common.loading')}</p>
+              <p className="mt-1 text-xs text-pos dark:text-pos-light">{t('common.loading')}</p>
             )}
           </div>
         </div>
 
         <form onSubmit={handleSaveProfile} className="space-y-4">
+          {/* 邮箱字段 - 禁用状态 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.email')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.email')}</label>
             <div className="relative">
-              <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 dark:text-gray-600" />
+              <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-600" />
+              {/* 禁用输入框 - bg-base-800/50 border-base-700 符合新设计规范 */}
               <input
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-500"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-400"
               />
             </div>
           </div>
 
+          {/* 姓名字段 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.name')} *</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.name')} *</label>
             <div className="relative">
-              <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-500" />
+              {/* 输入框 - focus:border-action focus:ring-2 focus:ring-action/20 符合新设计规范 */}
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-500 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
               />
             </div>
           </div>
 
+          {/* 机构字段 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.institution')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.institution')}</label>
             <div className="relative">
-              <Building2 size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <Building2 size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-500" />
               <input
                 type="text"
                 value={institution}
                 onChange={(e) => setInstitution(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-500 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
               />
             </div>
           </div>
 
+          {/* 角色字段 - 禁用状态 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.role')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.role')}</label>
             <div className="relative">
-              <Shield size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 dark:text-gray-600" />
+              <Shield size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-600" />
               <input
                 type="text"
                 value={t(`roles.${user?.role}`)}
                 disabled
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-500"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-400"
               />
             </div>
           </div>
 
+          {/* 保存按钮 - 使用 glow-btn 发光按钮类 */}
           <button
             type="submit"
             disabled={profileSaving}
-            className="rounded-lg bg-cyan px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50"
+            className="glow-btn rounded-xl px-6 py-2.5 text-sm font-semibold text-base-900 disabled:opacity-50"
           >
             {profileSaving ? t('profile.saving') : t('profile.saveProfile')}
           </button>
         </form>
       </div>
 
-      {/* 修改密码 */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('profile.changePassword')}</h2>
+      {/* 修改密码 - 使用 glass 玻璃态卡片 */}
+      <div className="glass rounded-xl p-6">
+        {/* 卡片标题 - font-display 字体 */}
+        <h2 className="mb-4 font-display text-lg font-semibold text-base-100 dark:text-white">{t('profile.changePassword')}</h2>
 
+        {/* 消息提示 - helix→pos(翠绿), coral→neg(玫瑰红) 颜色映射 */}
         {passwordMsg && (
-          <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${passwordMsg.type === 'success' ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+          <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${passwordMsg.type === 'success' ? 'bg-pos/10 text-pos dark:bg-pos/20 dark:text-pos-light' : 'bg-neg/10 text-neg dark:bg-neg/20 dark:text-neg-light'}`}>
             {passwordMsg.text}
           </div>
         )}
 
         <form onSubmit={handleChangePassword} className="space-y-4">
+          {/* 当前密码字段 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.currentPassword')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.currentPassword')}</label>
             <div className="relative">
-              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-500" />
               <input
                 type={showCurrentPassword ? 'text' : 'password'}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-500 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                 placeholder={t('profile.currentPasswordPlaceholder')}
               />
+              {/* 密码显示/隐藏按钮 */}
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200 dark:hover:text-base-300"
               >
                 {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
+          {/* 新密码字段 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.newPassword')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.newPassword')}</label>
             <div className="relative">
-              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-500" />
               <input
                 type={showNewPassword ? 'text' : 'password'}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-500 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                 placeholder={t('profile.newPasswordPlaceholder')}
               />
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200 dark:hover:text-base-300"
               >
                 {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
+          {/* 确认新密码字段 */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('profile.confirmNewPassword')}</label>
+            <label className="mb-1 block text-sm font-medium text-base-300 dark:text-base-300">{t('profile.confirmNewPassword')}</label>
             <div className="relative">
-              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400 dark:text-base-500" />
               <input
                 type={showConfirmNewPassword ? 'text' : 'password'}
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-500 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                 placeholder={t('profile.confirmNewPasswordPlaceholder')}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200 dark:hover:text-base-300"
               >
                 {showConfirmNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
+          {/* 修改密码按钮 - navy→base 颜色映射 */}
           <button
             type="submit"
             disabled={passwordSaving}
-            className="rounded-lg bg-navy px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-600 disabled:opacity-50 dark:bg-gray-600 dark:hover:bg-gray-500"
+            className="rounded-xl bg-base-700 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-base-600 disabled:opacity-50"
           >
             {passwordSaving ? t('profile.changing') : t('profile.changePasswordBtn')}
           </button>
