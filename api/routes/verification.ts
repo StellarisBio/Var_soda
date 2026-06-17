@@ -47,7 +47,11 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
 
     // 注册时检查是否已存在
     if (purpose === 'register') {
-      const field = type === 'email' ? 'email' : 'phone'
+      const field = type === 'email' ? 'email' : type === 'phone' ? 'phone' : null
+      if (!field) {
+        res.status(400).json({ success: false, error: '无效的类型' })
+        return
+      }
       const existing = db.prepare(`SELECT id FROM users WHERE ${field} = ?`).get(target)
       if (existing) {
         res.status(409).json({ success: false, error: type === 'email' ? '该邮箱已被注册' : '该手机号已被注册' })
@@ -57,7 +61,11 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
 
     // 重置密码时检查是否存在
     if (purpose === 'reset_password') {
-      const field = type === 'email' ? 'email' : 'phone'
+      const field = type === 'email' ? 'email' : type === 'phone' ? 'phone' : null
+      if (!field) {
+        res.status(400).json({ success: false, error: '无效的类型' })
+        return
+      }
       const existing = db.prepare(`SELECT id FROM users WHERE ${field} = ?`).get(target)
       if (!existing) {
         res.status(404).json({ success: false, error: type === 'email' ? '该邮箱未注册' : '该手机号未注册' })
@@ -96,17 +104,20 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
 
     // 发送验证码
     let sent = false
-    const isDevMode = type === 'phone' ? true : (!process.env.SMTP_HOST || !process.env.SMTP_USER)
+    const isDevMode = process.env.NODE_ENV === 'development'
 
     if (type === 'email') {
       sent = await sendVerificationEmail(target, code, purpose as 'register' | 'reset_password')
     } else {
-      // 手机验证码：开发模式输出到控制台
-      console.log(`[DEV MODE] SMS code for ${target} (${purpose}): ${code}`)
-      sent = true
+      // 手机验证码：仅开发模式输出到控制台，不返回给客户端
+      if (isDevMode) {
+        console.log(`[DEV MODE] SMS code for ${target} (${purpose}): ${code}`)
+      }
+      // TODO: 接入真实 SMS 供应商
+      sent = isDevMode
     }
 
-    if (!sent && !isDevMode) {
+    if (!sent) {
       res.status(500).json({ success: false, error: '验证码发送失败，请稍后重试' })
       return
     }
@@ -114,7 +125,6 @@ router.post('/send', async (req: Request, res: Response): Promise<void> => {
     res.json({
       success: true,
       message: isDevMode ? '验证码已生成（开发模式）' : '验证码已发送',
-      ...(isDevMode ? { devCode: code } : {}),
     })
   } catch (error) {
     console.error('Send verification code error:', error)

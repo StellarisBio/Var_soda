@@ -177,12 +177,67 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-navy via-navy-600 to-navy-800 px-4">
-      {/* Language & Theme toggle - 页面右上角 */}
-      <div className="absolute right-4 top-4 flex gap-2">
+    // 根容器：深色 base-900 背景 + overflow-hidden 防止装饰元素溢出 + 入场动画
+    <div className="relative flex min-h-screen animate-fade-in items-center justify-center overflow-hidden bg-base-900 px-4">
+      {/* ===== 背景装饰元素：6 个绝对定位 SVG，不同颜色与动画营造光谱实验室氛围 ===== */}
+      {/* 1. DNA 双螺旋 - nav 靛蓝色 - animate-float 浮动 */}
+      <svg className="pointer-events-none absolute left-[-40px] top-[10%] h-64 w-64 animate-float text-nav/10" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+        <path d="M50 20 Q150 60 50 100 Q150 140 50 180" stroke="currentColor" strokeWidth="3" />
+        <path d="M150 20 Q50 60 150 100 Q50 140 150 180" stroke="currentColor" strokeWidth="3" />
+        <line x1="50" y1="20" x2="150" y2="20" stroke="currentColor" strokeWidth="2" />
+        <line x1="50" y1="60" x2="150" y2="60" stroke="currentColor" strokeWidth="2" />
+        <line x1="50" y1="100" x2="150" y2="100" stroke="currentColor" strokeWidth="2" />
+        <line x1="50" y1="140" x2="150" y2="140" stroke="currentColor" strokeWidth="2" />
+        <line x1="50" y1="180" x2="150" y2="180" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      {/* 2. 六边形分子结构 - action 电蓝色 - animate-float-slow 缓慢浮动 */}
+      <svg className="pointer-events-none absolute right-[-30px] top-[15%] h-48 w-48 animate-float-slow text-action/10" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <polygon points="50,5 90,27 90,73 50,95 10,73 10,27" stroke="currentColor" strokeWidth="2" />
+        <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" stroke="currentColor" strokeWidth="2" />
+        <circle cx="50" cy="50" r="8" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      {/* 3. 嵌套三角形 - info 青色 - animate-drift 漂移 */}
+      <svg className="pointer-events-none absolute bottom-[15%] left-[5%] h-40 w-40 animate-drift text-info/10" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <polygon points="50,10 90,85 10,85" stroke="currentColor" strokeWidth="2" />
+        <polygon points="50,30 75,75 25,75" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      {/* 4. 嵌套菱形 - sec 紫罗兰 - animate-float 浮动 */}
+      <svg className="pointer-events-none absolute bottom-[10%] right-[5%] h-44 w-44 animate-float text-sec/10" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <polygon points="50,5 95,50 50,95 5,50" stroke="currentColor" strokeWidth="2" />
+        <polygon points="50,25 75,50 50,75 25,50" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      {/* 5. 同心圆波纹 - hi 粉色 - animate-float-slow 缓慢浮动 */}
+      <svg className="pointer-events-none absolute left-[8%] top-[45%] h-32 w-32 animate-float-slow text-hi/10" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" />
+        <circle cx="50" cy="50" r="25" stroke="currentColor" strokeWidth="2" />
+        <circle cx="50" cy="50" r="10" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      {/* 6. 分子点阵 - pos 翠绿 - animate-drift 漂移 */}
+      <svg className="pointer-events-none absolute right-[10%] top-[50%] h-36 w-36 animate-drift text-pos/10" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="4" fill="currentColor" />
+        <circle cx="50" cy="20" r="4" fill="currentColor" />
+        <circle cx="80" cy="20" r="4" fill="currentColor" />
+        <circle cx="20" cy="50" r="4" fill="currentColor" />
+        <circle cx="50" cy="50" r="4" fill="currentColor" />
+        <circle cx="80" cy="50" r="4" fill="currentColor" />
+        <circle cx="20" cy="80" r="4" fill="currentColor" />
+        <circle cx="50" cy="80" r="4" fill="currentColor" />
+        <circle cx="80" cy="80" r="4" fill="currentColor" />
+        <line x1="20" y1="20" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="50" y1="20" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="80" y1="20" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="20" y1="50" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="80" y1="50" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="20" y1="80" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="50" y1="80" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+        <line x1="80" y1="80" x2="50" y2="50" stroke="currentColor" strokeWidth="1" />
+      </svg>
+
+      {/* Language & Theme toggle - 页面右上角，使用玻璃态按钮，z-10 确保在装饰元素之上 */}
+      <div className="absolute right-4 top-4 z-10 flex gap-2">
         <button
           onClick={toggleTheme}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          className="glass inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-base-100 transition-colors hover:border-action"
           title={theme === 'light' ? t('common.darkMode') : t('common.lightMode')}
         >
           {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
@@ -190,35 +245,35 @@ export default function Login() {
         </button>
         <button
           onClick={toggleLang}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          className="glass inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-base-100 transition-colors hover:border-action"
         >
           {lang === 'zh' ? '中文' : 'EN'} / {lang === 'zh' ? 'EN' : '中文'}
         </button>
       </div>
 
-      <div className="w-full max-w-md">
-        {/* Logo */}
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo 区域：DNA 图标用 from-nav to-action 渐变背景包裹 + animate-float 浮动 + gradient-text 渐变文字 */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex items-center justify-center rounded-2xl bg-cyan/10 p-4">
-            <Dna size={40} className="text-cyan" />
+          <div className="mb-4 inline-flex animate-float items-center justify-center rounded-2xl bg-gradient-to-br from-nav to-action p-4">
+            <Dna size={40} className="text-white" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-white">
-            WES<span className="text-cyan">DB</span>
+          <h1 className="gradient-text font-display text-3xl font-bold">
+            Var_soda
           </h1>
-          <p className="mt-2 text-navy-200">{t('auth.subtitle')}</p>
+          <p className="mt-2 text-base-300">{t('auth.subtitle')}</p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-xl bg-white p-8 shadow-xl dark:bg-gray-800">
-          <h2 className="mb-6 font-serif text-xl font-semibold text-navy dark:text-white">{t('auth.signIn')}</h2>
+        {/* 登录卡片：使用 glass 玻璃态效果 */}
+        <div className="glass rounded-xl p-8 shadow-xl">
+          <h2 className="font-display mb-6 text-xl font-semibold text-base-100">{t('auth.signIn')}</h2>
 
-          {/* 登录方式 Tab */}
-          <div className="mb-6 flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
+          {/* 登录方式 Tab - 激活态 bg-nav/20 text-nav-light，非激活态 text-base-400 */}
+          <div className="mb-6 flex rounded-lg bg-base-800/50 p-1">
             <button
               type="button"
               onClick={() => { setLoginTab('email'); setError(''); }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                loginTab === 'email' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                loginTab === 'email' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
               }`}
             >
               <Mail size={16} />
@@ -228,7 +283,7 @@ export default function Login() {
               type="button"
               onClick={() => { setLoginTab('phone'); setError(''); }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                loginTab === 'phone' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                loginTab === 'phone' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
               }`}
             >
               <Smartphone size={16} />
@@ -236,8 +291,9 @@ export default function Login() {
             </button>
           </div>
 
+          {/* 错误提示 - bg-neg/10 text-neg-light */}
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+            <div className="mb-4 rounded-lg bg-neg/10 px-4 py-3 text-sm text-neg-light">
               {error}
             </div>
           )}
@@ -246,36 +302,36 @@ export default function Login() {
             {loginTab === 'email' ? (
               <>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.email')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.email')}</label>
                   <div className="relative">
-                    <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                    <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                      className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                       placeholder={t('auth.emailPlaceholder')}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.password')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.password')}</label>
                   <div className="relative">
-                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                      className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                       placeholder={t('auth.passwordPlaceholder')}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200"
                       title={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -283,12 +339,12 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* 忘记密码 */}
+                {/* 忘记密码 - pos-light 链接 */}
                 <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={openResetModal}
-                    className="text-sm font-medium text-cyan hover:underline dark:text-cyan-400"
+                    className="text-sm font-medium text-pos-light hover:underline"
                   >
                     {t('auth.forgotPassword')}
                   </button>
@@ -297,40 +353,41 @@ export default function Login() {
             ) : (
               <>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.phone')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.phone')}</label>
                   <div className="relative">
-                    <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                    <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
                       required
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                      className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                       placeholder={t('auth.phonePlaceholder')}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.verificationCode')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.verificationCode')}</label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                      <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                       <input
                         type="text"
                         value={phoneCode}
                         onChange={(e) => setPhoneCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                         required
                         maxLength={6}
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm tracking-widest focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                        className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm tracking-widest text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                         placeholder={t('auth.verificationCodePlaceholder')}
                       />
                     </div>
+                    {/* 发送验证码按钮 - 次按钮 glass border-base-600 */}
                     <button
                       type="button"
                       onClick={handleSendPhoneCode}
                       disabled={phoneCodeCountdown > 0 || phoneCodeSending || !phone}
-                      className="shrink-0 rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="glass shrink-0 rounded-xl border-base-600 px-4 py-2.5 text-sm font-medium text-base-100 transition-colors hover:border-action disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap"
                     >
                       {phoneCodeSending
                         ? '...'
@@ -343,48 +400,49 @@ export default function Login() {
               </>
             )}
 
+            {/* 主提交按钮 - glow-btn text-white */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-cyan py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50"
+              className="glow-btn w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50"
             >
               {loading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-6 text-center text-sm text-base-400">
             {t('auth.noAccount')}{' '}
-            <Link to="/register" className="font-medium text-cyan hover:underline dark:text-cyan-400">
+            <Link to="/register" className="font-medium text-pos-light hover:underline">
               {t('auth.goToRegister')}
             </Link>
           </p>
         </div>
       </div>
 
-      {/* 重置密码弹窗 */}
+      {/* 重置密码弹窗 - 使用 glass 玻璃态卡片 */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <div className="glass w-full max-w-md rounded-xl p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <KeyRound size={20} className="text-cyan" />
-                <h3 className="font-serif text-lg font-semibold text-navy dark:text-white">{t('auth.resetPasswordTitle')}</h3>
+                <KeyRound size={20} className="text-pos-light" />
+                <h3 className="font-display text-lg font-semibold text-base-100">{t('auth.resetPasswordTitle')}</h3>
               </div>
               <button
                 onClick={() => setShowResetModal(false)}
-                className="rounded-lg p-1 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
+                className="rounded-lg p-1 text-base-400 hover:bg-base-700 hover:text-base-200"
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* 重置方式 Tab */}
-            <div className="mb-4 flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
+            {/* 重置方式 Tab - 激活态 bg-nav/20 text-nav-light */}
+            <div className="mb-4 flex rounded-lg bg-base-800/50 p-1">
               <button
                 type="button"
                 onClick={() => { setResetType('email'); setResetError(''); setCodeCountdown(0); }}
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                  resetType === 'email' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  resetType === 'email' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
                 }`}
               >
                 <Mail size={14} />
@@ -394,7 +452,7 @@ export default function Login() {
                 type="button"
                 onClick={() => { setResetType('phone'); setResetError(''); setCodeCountdown(0); }}
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-sm font-medium transition-colors ${
-                  resetType === 'phone' ? 'bg-white text-navy shadow-sm dark:bg-gray-600 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  resetType === 'phone' ? 'bg-nav/20 text-nav-light shadow-sm' : 'text-base-400 hover:text-base-200'
                 }`}
               >
                 <Smartphone size={14} />
@@ -402,13 +460,14 @@ export default function Login() {
               </button>
             </div>
 
-            <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mb-4 text-sm text-base-400">
               {resetType === 'email' ? t('auth.resetPasswordDesc') : t('auth.resetPasswordDescPhone')}
             </p>
 
             {resetSuccess ? (
               <div className="space-y-4">
-                <div className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                {/* 成功提示 - bg-pos/10 text-pos-light */}
+                <div className="rounded-lg bg-pos/10 px-4 py-3 text-sm text-pos-light">
                   {t('auth.resetSuccess')}
                 </div>
                 <button
@@ -416,45 +475,46 @@ export default function Login() {
                     setShowResetModal(false);
                     setPassword('');
                   }}
-                  className="w-full rounded-lg bg-cyan py-2.5 text-sm font-semibold text-white hover:bg-cyan-600"
+                  className="glow-btn w-full rounded-xl py-2.5 text-sm font-semibold text-white"
                 >
                   {t('auth.backToLogin')}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleResetPassword} className="space-y-4">
+                {/* 错误提示 - bg-neg/10 text-neg-light */}
                 {resetError && (
-                  <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                  <div className="rounded-lg bg-neg/10 px-4 py-3 text-sm text-neg-light">
                     {resetError}
                   </div>
                 )}
 
                 {resetType === 'email' ? (
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.email')}</label>
+                    <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.email')}</label>
                     <div className="relative">
-                      <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                      <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                       <input
                         type="email"
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value)}
                         required
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                        className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                         placeholder={t('auth.emailPlaceholder')}
                       />
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.phone')}</label>
+                    <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.phone')}</label>
                     <div className="relative">
-                      <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                      <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                       <input
                         type="tel"
                         value={resetPhone}
                         onChange={(e) => setResetPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
                         required
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                        className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                         placeholder={t('auth.phonePlaceholder')}
                       />
                     </div>
@@ -463,25 +523,26 @@ export default function Login() {
 
                 {/* 验证码 */}
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.verificationCode')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.verificationCode')}</label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                      <Send size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                       <input
                         type="text"
                         value={resetVerificationCode}
                         onChange={(e) => setResetVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                         required
                         maxLength={6}
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-4 text-sm tracking-widest focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                        className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-4 text-sm tracking-widest text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                         placeholder={t('auth.verificationCodePlaceholder')}
                       />
                     </div>
+                    {/* 发送验证码按钮 - 次按钮 glass border-base-600 */}
                     <button
                       type="button"
                       onClick={handleSendResetCode}
                       disabled={codeCountdown > 0 || codeSending || (!resetEmail && resetType === 'email') || (!resetPhone && resetType === 'phone')}
-                      className="shrink-0 rounded-lg bg-navy px-4 py-2.5 text-sm font-medium text-white hover:bg-navy-600 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="glass shrink-0 rounded-xl border-base-600 px-4 py-2.5 text-sm font-medium text-base-100 transition-colors hover:border-action disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap"
                     >
                       {codeSending
                         ? '...'
@@ -493,21 +554,21 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.newPassword')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.newPassword')}</label>
                   <div className="relative">
-                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                     <input
                       type={showResetNewPassword ? 'text' : 'password'}
                       value={resetNewPassword}
                       onChange={(e) => setResetNewPassword(e.target.value)}
                       required
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                      className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                       placeholder={t('auth.newPasswordPlaceholder')}
                     />
                     <button
                       type="button"
                       onClick={() => setShowResetNewPassword(!showResetNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200"
                     >
                       {showResetNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -515,31 +576,32 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('auth.confirmNewPassword')}</label>
+                  <label className="mb-1 block text-sm font-medium text-base-300">{t('auth.confirmNewPassword')}</label>
                   <div className="relative">
-                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                    <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
                     <input
                       type={showResetConfirmPassword ? 'text' : 'password'}
                       value={resetConfirmPassword}
                       onChange={(e) => setResetConfirmPassword(e.target.value)}
                       required
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 py-2.5 pl-10 pr-10 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+                      className="w-full rounded-xl border border-base-700 bg-base-800/50 py-2.5 pl-10 pr-10 text-sm text-base-100 placeholder-base-400 focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20"
                       placeholder={t('auth.confirmNewPasswordPlaceholder')}
                     />
                     <button
                       type="button"
                       onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-200"
                     >
                       {showResetConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
 
+                {/* 主提交按钮 - glow-btn text-white */}
                 <button
                   type="submit"
                   disabled={resetLoading}
-                  className="w-full rounded-lg bg-cyan py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-600 disabled:opacity-50"
+                  className="glow-btn w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50"
                 >
                   {resetLoading ? t('auth.resetting') : t('auth.resetPassword')}
                 </button>

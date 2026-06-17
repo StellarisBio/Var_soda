@@ -1,11 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@300;400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
+/* 导入字体：Manrope 标题(类苹果风格)、Outfit 正文、JetBrains Mono 代码 */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* 全局过渡动画 — 确保所有颜色/边框变化平滑 */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
 :root {
-  font-family: "DM Sans", system-ui, sans-serif;
+  /* 使用 Outfit 作为默认正文字体 */
+  font-family: "Outfit", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -14,10 +21,111 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* 深色主题为默认，使用深炭灰作为背景 */
 body {
-  background-color: #F0F4F8;
+  background-color: #0D1117;
+  color: #E2E8F0;
 }
 
-.dark body {
-  background-color: #111827;
+/* 浅色模式背景 */
+.light body {
+  background-color: #F1F5F9;
+  color: #1E293B;
 }
+
+/* 玻璃态卡片 — 通用 */
+.glass {
+  background: rgba(22, 30, 46, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(100, 116, 139, 0.15);
+}
+
+/* 玻璃态卡片 — 导航色调(靛蓝) */
+.glass-nav {
+  background: rgba(30, 27, 75, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+/* 玻璃态卡片 — 主操作色调(蓝) */
+.glass-action {
+  background: rgba(30, 58, 138, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* 玻璃态卡片 — 正向色调(翠绿) */
+.glass-pos {
+  background: rgba(6, 78, 59, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* 玻璃态卡片 — 警告色调(琥珀) */
+.glass-warn {
+  background: rgba(120, 53, 15, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+/* 玻璃态卡片 — 危险色调(玫瑰红) */
+.glass-neg {
+  background: rgba(136, 19, 55, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+}
+
+/* 玻璃态卡片 — 信息色调(青色) */
+.glass-info {
+  background: rgba(8, 47, 73, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+/* 浅色模式玻璃态 */
+.light .glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 渐变文字效果 */
+.gradient-text {
+  background: linear-gradient(135deg, #6366F1, #06B6D4, #10B981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 发光按钮 — 带光晕效果的主按钮 */
+.glow-btn {
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 4px 16px rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 6px 24px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ACMG 五级分类渐变色 — 从红到蓝 */
+.acmg-pathogenic { background: linear-gradient(135deg, #F43F5E, #E11D48); }
+.acmg-likely-pathogenic { background: linear-gradient(135deg, #F97316, #EA580C); }
+.acmg-vus { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.acmg-likely-benign { background: linear-gradient(135deg, #10B981, #059669); }
+.acmg-benign { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+
+/* 自定义滚动条 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }

@@ -129,6 +129,7 @@ export interface AuthPayload {
   email: string;
   name: string;
   role: 'admin' | 'reviewer' | 'analyst';
+  tokenVersion: number;
 }
 
 export type UserPublic = Omit<User, 'is_active'> & { is_active: number };

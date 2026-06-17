@@ -46,47 +46,58 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan border-t-transparent" />
+        {/* 加载旋转动画 - 使用 pos 主色调（光谱绿） */}
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-pos border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">{t('dashboard.title')}</h1>
+    /* 主容器 - 添加入场淡入动画 */
+    <div className="space-y-6 animate-fade-in">
+      {/* 页面标题 - 使用 font-display (Manrope) 字体 */}
+      <h1 className="font-display text-2xl font-bold text-base dark:text-white">{t('dashboard.title')}</h1>
 
-      {/* Stat cards */}
+      {/* 统计卡片 - 玻璃态设计，每个使用不同分类色调 */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 总变异数 - 信息色调(青) */}
         <StatCard
           icon={<Dna size={24} />}
           label={t('dashboard.totalVariants')}
           value={stats?.totalVariants ?? 0}
-          color="bg-cyan-50 text-cyan dark:bg-cyan-900/30 dark:text-cyan-400"
+          glassClass="glass-info"
+          iconColor="bg-info/10 text-info"
         />
+        {/* 月度新增 - 成功色调(绿) */}
         <StatCard
           icon={<TrendingUp size={24} />}
           label={t('dashboard.monthlyNew')}
           value={stats?.monthlyNew ?? 0}
-          color="bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+          glassClass="glass-pos"
+          iconColor="bg-pos/10 text-pos"
         />
+        {/* 待审核 - 警告色调(琥珀) */}
         <StatCard
           icon={<Clock size={24} />}
           label={t('dashboard.pendingReview')}
           value={stats?.pendingReview ?? 0}
-          color="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+          glassClass="glass-warn"
+          iconColor="bg-warn/10 text-warn"
         />
+        {/* 致病变异 - 危险色调(红) */}
         <StatCard
           icon={<AlertCircle size={24} />}
           label={t('dashboard.pathogenic')}
           value={stats?.acmgDistribution?.['Pathogenic'] ?? 0}
-          color="bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+          glassClass="glass-neg"
+          iconColor="bg-neg/10 text-neg"
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* ACMG Distribution */}
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">
+        {/* ACMG 分布 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">
             {t('dashboard.acmgDistribution')}
           </h2>
           {stats ? (
@@ -130,35 +141,35 @@ export default function Dashboard() {
                       className="inline-block h-3 w-3 rounded-sm flex-shrink-0"
                       style={{ backgroundColor: ACMG_PIE_COLORS[cls] }}
                     />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{cls}</span>
-                    <span className="ml-auto font-mono text-sm font-medium text-gray-700 dark:text-gray-300">{stats.acmgDistribution[cls] || 0}</span>
+                    <span className="text-sm text-base-600 dark:text-base-400">{cls}</span>
+                    <span className="ml-auto font-mono text-sm font-medium text-base-700 dark:text-base-300">{stats.acmgDistribution[cls] || 0}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('common.noData')}</p>
+            <p className="py-4 text-center text-sm text-base-400 dark:text-base-500">{t('common.noData')}</p>
           )}
         </div>
 
-        {/* Pending Review */}
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">
+        {/* 待审核 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">
             {t('dashboard.pendingReviewTitle')}
           </h2>
           {pendingVariants.length === 0 ? (
-            <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('dashboard.noPending')}</p>
+            <p className="py-4 text-center text-sm text-base-400 dark:text-base-500">{t('dashboard.noPending')}</p>
           ) : (
             <div className="space-y-3">
               {pendingVariants.map((v) => (
                 <Link
                   key={v.id}
                   to={`/variants/${v.id}`}
-                  className="flex items-center justify-between rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
+                  className="flex items-center justify-between rounded-lg border border-base-800 p-3 transition-colors hover:bg-base-800/30 dark:border-base-700 dark:hover:bg-base-700"
                 >
                   <div>
-                    <span className="font-mono text-sm font-medium text-navy dark:text-white">{v.gene}</span>
-                    <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">{v.cdna_change}</span>
+                    <span className="font-mono text-sm font-medium text-base dark:text-white">{v.gene}</span>
+                    <span className="ml-2 text-xs text-base-500 dark:text-base-400">{v.cdna_change}</span>
                   </div>
                   <ACMGBadge classification={v.acmg_class} />
                 </Link>
@@ -168,47 +179,49 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Variants */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('dashboard.recentVariants')}</h2>
+      {/* 最近变异 - 玻璃态卡片 */}
+      <div className="glass rounded-2xl p-6 animate-fade-in">
+        <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('dashboard.recentVariants')}</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.gene')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.chrPos')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.transcript')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.refAllele')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.altAllele')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.cdna')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.protein')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.genomeBuild')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmgEvidence')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('variants.acmg')}</th>
-                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t('common.status')}</th>
+              {/* 表头 - 深色半透明背景 */}
+              <tr className="border-b border-base-700 bg-base-800/50">
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.gene')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.chrPos')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.transcript')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.refAllele')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.altAllele')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.cdna')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.protein')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.genomeBuild')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.acmgEvidence')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('variants.acmg')}</th>
+                <th className="px-4 py-3 font-medium text-base-500 dark:text-base-400">{t('common.status')}</th>
               </tr>
             </thead>
             <tbody>
               {recentVariants.map((v) => (
-                <tr key={v.id} className="border-b border-gray-50 transition-colors hover:bg-gray-50 dark:border-gray-700/50 dark:hover:bg-gray-700/50">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-cyan dark:text-cyan-400">
+                /* 表格行 - hover 时显示半透明高亮 */
+                <tr key={v.id} className="border-b border-base-800/50 transition-colors hover:bg-base-800/30">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-pos dark:text-pos-light">
                     {v.gene}
                   </td>
                   <td className="px-4 py-3">
-                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-green-600 hover:underline dark:text-green-400">
+                    <Link to={`/variants/${v.id}`} className="font-mono text-xs font-semibold text-pos-dark hover:underline dark:text-pos-light">
                       {v.chromosome}-{Number(v.position)}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.transcript || ''}</td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 font-mono text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">{v.ref_allele}</span></td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-rose-50 px-1.5 py-0.5 font-mono text-xs font-medium text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">{v.alt_allele}</span></td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.cdna_change || ''}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{v.protein_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.transcript || ''}</td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-neg/10 px-1.5 py-0.5 font-mono text-xs font-medium text-neg-dark dark:bg-neg/10 dark:text-neg-light">{v.alt_allele}</span></td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.cdna_change || ''}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       (v.genome_build || 'GRCh38') === 'GRCh38'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                        ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
+                        : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
                     }`}>
                       {v.genome_build || 'GRCh38'}
                     </span>
@@ -217,13 +230,13 @@ export default function Dashboard() {
                     {v.evidence_codes && v.evidence_codes.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {v.evidence_codes.map((code) => (
-                          <span key={code} className="inline-flex items-center rounded bg-cyan-50 px-1.5 py-0.5 font-mono text-xs font-medium text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                          <span key={code} className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">
                             {code}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-xs text-gray-400">—</span>
+                      <span className="text-xs text-base-400">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3"><ACMGBadge classification={v.acmg_class} /></td>
@@ -232,7 +245,7 @@ export default function Dashboard() {
               ))}
               {recentVariants.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                  <td colSpan={11} className="px-4 py-8 text-center text-base-400 dark:text-base-500">
                     {t('dashboard.noVariants')}
                   </td>
                 </tr>
@@ -245,22 +258,25 @@ export default function Dashboard() {
   );
 }
 
+/* 统计卡片组件 - 玻璃态设计，按分类使用不同色调 glass 类 */
 function StatCard({
   icon,
   label,
   value,
-  color,
+  glassClass,
+  iconColor,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number;
-  color: string;
+  glassClass: string;
+  iconColor: string;
 }) {
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm dark:bg-gray-800">
-      <div className={`mb-3 inline-flex rounded-lg p-2.5 ${color}`}>{icon}</div>
-      <p className="font-mono text-2xl font-bold text-navy dark:text-white">{value}</p>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{label}</p>
+    <div className={`${glassClass} rounded-2xl p-5 animate-fade-in`}>
+      <div className={`mb-3 inline-flex rounded-lg p-2.5 ${iconColor}`}>{icon}</div>
+      <p className="font-mono text-2xl font-bold text-base dark:text-white">{value}</p>
+      <p className="mt-1 text-sm text-base-500 dark:text-base-400">{label}</p>
     </div>
   );
 }

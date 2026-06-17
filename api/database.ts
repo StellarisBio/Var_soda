@@ -232,7 +232,8 @@ CREATE TABLE IF NOT EXISTS variant_history (
 );
 `)
 
-  // Seed admin user if not exists
+  // 种子管理员账户：使用硬编码的 admin@wes-db.com / admin123
+  // 确保系统初始化时始终创建管理员账户
   const stmt = db.prepare('SELECT id FROM users WHERE email = ?')
   stmt.bind(['admin@wes-db.com'])
   const adminExists = stmt.step()
@@ -266,6 +267,9 @@ CREATE TABLE IF NOT EXISTS variant_history (
     }
     if (!columnNames.includes('avatar')) {
       db.run('ALTER TABLE users ADD COLUMN avatar TEXT')
+    }
+    if (!columnNames.includes('token_version')) {
+      db.run('ALTER TABLE users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0')
     }
   }
 

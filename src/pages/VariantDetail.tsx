@@ -11,12 +11,13 @@ import { useI18n } from '@/hooks/useI18n';
 
 const ACMG_CLASSES = ['Pathogenic', 'Likely Pathogenic', 'VUS', 'Likely Benign', 'Benign'] as const;
 
+/* ACMG 分类按钮渐变色 - 使用 CSS 中定义的渐变类 */
 const ACMG_CLASS_COLORS: Record<string, string> = {
-  'Pathogenic': 'bg-acmg-pathogenic text-white',
-  'Likely Pathogenic': 'bg-acmg-likelyPathogenic text-white',
-  'VUS': 'bg-acmg-vus text-white',
-  'Likely Benign': 'bg-acmg-likelyBenign text-white',
-  'Benign': 'bg-acmg-benign text-white',
+  'Pathogenic': 'acmg-pathogenic text-white',
+  'Likely Pathogenic': 'acmg-likely-pathogenic text-white',
+  'VUS': 'acmg-vus text-white',
+  'Likely Benign': 'acmg-likely-benign text-white',
+  'Benign': 'acmg-benign text-white',
 };
 
 const EVIDENCE_CATEGORIES = [
@@ -211,7 +212,8 @@ export default function VariantDetail() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan border-t-transparent" />
+        {/* 加载旋转动画 - 使用 pos 主色调（光谱绿） */}
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-pos border-t-transparent" />
       </div>
     );
   }
@@ -222,22 +224,24 @@ export default function VariantDetail() {
   const canEdit = user?.role === 'admin' || user?.id === variant.created_by;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="sticky top-[-1rem] z-10 -mx-4 -mt-4 mb-6 border-b border-gray-200 bg-slate-bg px-4 pb-4 pt-4 dark:border-gray-700 dark:bg-gray-900 lg:-mx-6 lg:-mt-6 lg:top-[-1.5rem] lg:px-6 lg:pt-6">
+    /* 主容器 - 添加入场淡入动画 */
+    <div className="space-y-6 animate-fade-in">
+      {/* 顶部固定栏 - 深色背景 */}
+      <div className="sticky top-[-1rem] z-10 -mx-4 -mt-4 mb-6 border-b border-base-700 bg-base-900 px-4 pb-4 pt-4 dark:border-base-700 dark:bg-base-900 lg:-mx-6 lg:-mt-6 lg:top-[-1.5rem] lg:px-6 lg:pt-6">
         <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/variants')}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700"
+            className="rounded-lg p-2 text-base-500 hover:bg-base-800 dark:text-base-400 dark:hover:bg-base-700"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="font-serif text-2xl font-bold text-navy dark:text-white">
+            {/* 标题 - 使用 font-display 字体 */}
+            <h1 className="font-display text-2xl font-bold text-base dark:text-white">
               {variant.gene} - {variant.cdna_change || ''}
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{variant.protein_change || ''}</p>
+            <p className="text-sm text-base-500 dark:text-base-400">{variant.protein_change || ''}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -246,7 +250,7 @@ export default function VariantDetail() {
           {canEdit && !editing && (
             <button
               onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-2 text-sm text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700"
             >
               <Pencil size={14} />
               {t('common.edit')}
@@ -257,14 +261,14 @@ export default function VariantDetail() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex items-center gap-1 rounded-lg bg-cyan px-3 py-2 text-sm font-medium text-white hover:bg-cyan-600 disabled:opacity-50"
+                className="glow-btn inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
               >
                 <Save size={14} />
                 {saving ? t('common.saving') : t('common.save')}
               </button>
               <button
                 onClick={() => { setEditing(false); loadVariant(); }}
-                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-2 text-sm text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700"
               >
                 <X size={14} />
                 {t('common.cancel')}
@@ -274,7 +278,7 @@ export default function VariantDetail() {
           {user?.role === 'admin' && !editing && (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="inline-flex items-center gap-1 rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/30"
+              className="inline-flex items-center gap-1 rounded-lg border border-neg-light px-3 py-2 text-sm text-neg-dark hover:bg-neg/10 dark:border-neg-dark dark:text-neg-light dark:hover:bg-neg/10"
             >
               <Trash2 size={14} />
               {t('common.delete')}
@@ -284,9 +288,9 @@ export default function VariantDetail() {
         </div>
       </div>
 
-      {/* Basic Info */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.basicInfo')}</h2>
+      {/* 基本信息 - 玻璃态卡片 */}
+      <div className="glass rounded-2xl p-6 animate-fade-in">
+        <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.basicInfo')}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <InfoField label={t('variantDetail.chromosome')} value={variant.chromosome} field="chromosome" editing={editing} form={form} setForm={setForm} />
           <InfoField label={t('variantDetail.position')} value={String(variant.position)} field="position" editing={editing} form={form} setForm={setForm} type="number" />
@@ -297,16 +301,16 @@ export default function VariantDetail() {
           <InfoField label={t('variantDetail.cdnaChange')} value={variant.cdna_change || ''} field="cdna_change" editing={editing} form={form} setForm={setForm} />
           <InfoField label={t('variantDetail.proteinChange')} value={variant.protein_change || ''} field="protein_change" editing={editing} form={form} setForm={setForm} />
           <div>
-            <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">{t('variantDetail.genomeBuild')}</p>
+            <p className="mb-1 text-xs font-medium text-base-500 dark:text-base-400">{t('variantDetail.genomeBuild')}</p>
             {editing ? (
-              <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+              <div className="flex rounded-lg border border-base-600 dark:border-base-600 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setForm((f: any) => ({ ...f, genome_build: 'GRCh38' }))}
                   className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors ${
                     form.genome_build === 'GRCh38'
-                      ? 'bg-cyan text-white'
-                      : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      ? 'bg-pos text-white'
+                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
                   }`}
                 >
                   GRCh38
@@ -314,10 +318,10 @@ export default function VariantDetail() {
                 <button
                   type="button"
                   onClick={() => setForm((f: any) => ({ ...f, genome_build: 'GRCh37' }))}
-                  className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors border-l border-gray-300 dark:border-gray-600 ${
+                  className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
                     form.genome_build === 'GRCh37'
-                      ? 'bg-cyan text-white'
-                      : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      ? 'bg-pos text-white'
+                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
                   }`}
                 >
                   GRCh37
@@ -326,36 +330,36 @@ export default function VariantDetail() {
             ) : (
               <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                 (variant.genome_build || 'GRCh38') === 'GRCh38'
-                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                  : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                  ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
+                  : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
               }`}>
                 {variant.genome_build || 'GRCh38'}
               </span>
             )}
           </div>
           <div>
-            <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">{t('common.createdBy')}</p>
-            <p className="font-mono text-sm text-navy dark:text-white">{variant.creatorName || ''}</p>
+            <p className="mb-1 text-xs font-medium text-base-500 dark:text-base-400">{t('common.createdBy')}</p>
+            <p className="font-mono text-sm text-base dark:text-white">{variant.creatorName || ''}</p>
           </div>
         </div>
         <div className="mt-4">
-          <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">{t('common.notes')}</p>
+          <p className="mb-1 text-xs font-medium text-base-500 dark:text-base-400">{t('common.notes')}</p>
           {editing ? (
             <textarea
               value={form.notes}
               onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
               rows={3}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+              className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:focus:border-action dark:focus:ring-action/20"
             />
           ) : (
-            <p className="text-sm text-gray-700 dark:text-gray-300">{variant.notes || '—'}</p>
+            <p className="text-sm text-base-700 dark:text-base-300">{variant.notes || '—'}</p>
           )}
         </div>
       </div>
 
-      {/* ACMG Classification */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.acmgClassification')}</h2>
+      {/* ACMG 分类 - 玻璃态卡片 */}
+      <div className="glass rounded-2xl p-6 animate-fade-in">
+        <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.acmgClassification')}</h2>
         <div className="flex flex-wrap gap-2">
           {ACMG_CLASSES.map((cls) => (
             <button
@@ -365,7 +369,7 @@ export default function VariantDetail() {
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 form.acmg_class === cls
                   ? ACMG_CLASS_COLORS[cls]
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                  : 'bg-base-800 text-base-600 hover:bg-base-700 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
               } ${editing ? 'cursor-pointer' : 'cursor-default'}`}
             >
               {cls}
@@ -374,38 +378,38 @@ export default function VariantDetail() {
         </div>
       </div>
 
-      {/* ACMG Evidence */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.acmgEvidence')}</h2>
+      {/* ACMG 证据 - 玻璃态卡片 */}
+      <div className="glass rounded-2xl p-6 animate-fade-in">
+        <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.acmgEvidence')}</h2>
         <div className="space-y-6">
           {EVIDENCE_CATEGORIES.map((category) => (
             <div key={category.labelKey}>
-              <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t(category.labelKey)}</h3>
+              <h3 className="mb-2 text-sm font-semibold text-base-700 dark:text-base-300">{t(category.labelKey)}</h3>
               <div className="space-y-2">
                 {category.codes.map((code) => {
                   const evidence = evidences.find((e) => e.code === code);
                   return (
-                    <div key={code} className="flex items-start gap-3 rounded-lg border border-gray-100 dark:border-gray-700 p-3">
+                    <div key={code} className="flex items-start gap-3 rounded-lg border border-base-800 dark:border-base-700 p-3">
                       <input
                         type="checkbox"
                         checked={evidence?.checked || false}
                         onChange={() => editing && toggleEvidence(code)}
                         disabled={!editing}
-                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-cyan focus:ring-cyan"
+                        className="mt-0.5 h-4 w-4 rounded border-base-600 text-pos focus:ring-pos"
                       />
                       <div className="flex-1">
-                        <span className="font-mono text-sm font-semibold text-navy dark:text-white">{code}</span>
+                        <span className="font-mono text-sm font-semibold text-base dark:text-white">{code}</span>
                         {editing ? (
                           <textarea
                             value={evidence?.description || ''}
                             onChange={(e) => updateEvidenceDesc(code, e.target.value)}
                             rows={1}
                             placeholder={t('variantDetail.descriptionPlaceholder')}
-                            className="mt-1 w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                            className="mt-1 w-full rounded border border-base-700 bg-base-800/50 px-2 py-1 text-xs text-white focus:border-action focus:outline-none focus:ring-1 focus:ring-action/20 dark:border-base-700 dark:bg-base-800/50 dark:text-white dark:placeholder-base-400"
                           />
                         ) : (
                           evidence?.description && (
-                            <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">{evidence.description}</p>
+                            <p className="mt-0.5 text-xs text-base-600 dark:text-base-400">{evidence.description}</p>
                           )
                         )}
                       </div>
@@ -418,28 +422,29 @@ export default function VariantDetail() {
         </div>
       </div>
 
-      {/* AutoPVS1 Analysis */}
-      <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
+      {/* AutoPVS1 分析 - 玻璃态卡片 */}
+      <div className="glass rounded-2xl p-6 animate-fade-in">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="font-serif text-lg font-semibold text-navy dark:text-white">{t('autopvs1.title')}</h2>
-            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.description')}</p>
+            <h2 className="font-display text-lg font-semibold text-base dark:text-white">{t('autopvs1.title')}</h2>
+            <p className="mt-0.5 text-xs text-base-500 dark:text-base-400">{t('autopvs1.description')}</p>
           </div>
           <div className="flex items-center gap-2">
             {pvs1Result && (
               <button
                 onClick={handleSavePVS1Result}
                 disabled={pvs1Saving}
-                className="inline-flex items-center gap-1 rounded-lg border border-cyan-300 px-3 py-2 text-sm font-medium text-cyan-700 hover:bg-cyan-50 disabled:opacity-50 dark:border-cyan-700 dark:text-cyan-400 dark:hover:bg-cyan-900/30"
+                className="inline-flex items-center gap-1 rounded-lg border border-pos-light px-3 py-2 text-sm font-medium text-pos-dark hover:bg-pos/10 disabled:opacity-50 dark:border-pos-dark dark:text-pos-light dark:hover:bg-pos/10"
               >
                 <Bookmark size={14} />
                 {pvs1Saving ? t('autopvs1.saving') : t('autopvs1.saveResult')}
               </button>
             )}
+            {/* 分析按钮 - 发光渐变样式 */}
             <button
               onClick={handleAutoPVS1Analyze}
               disabled={pvs1Analyzing}
-              className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-cyan to-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50"
+              className="glow-btn inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
             >
               <Zap size={14} />
               {pvs1Analyzing ? t('autopvs1.analyzing') : t('autopvs1.analyze')}
@@ -447,96 +452,97 @@ export default function VariantDetail() {
           </div>
         </div>
 
+        {/* 错误提示 - 使用 neg 色系 */}
         {pvs1Error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
+          <div className="mb-4 rounded-lg border border-neg-light bg-neg/10 p-3 text-sm text-neg-light dark:border-neg-dark dark:bg-neg/10 dark:text-neg-light">
             {pvs1Error}
           </div>
         )}
 
         {pvs1Analyzing && (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan border-t-transparent" />
-            <span className="ml-3 text-sm text-gray-500 dark:text-gray-400">{t('autopvs1.analyzing')}</span>
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-pos border-t-transparent" />
+            <span className="ml-3 text-sm text-base-500 dark:text-base-400">{t('autopvs1.analyzing')}</span>
           </div>
         )}
 
         {!pvs1Analyzing && !pvs1Result && !pvs1Error && (
-          <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">{t('autopvs1.noResult')}</p>
+          <p className="py-8 text-center text-sm text-base-400 dark:text-base-500">{t('autopvs1.noResult')}</p>
         )}
 
         {pvs1Result && !pvs1Analyzing && (
           <div className="space-y-5">
-            {/* Incompatible warning */}
+            {/* 不兼容警告 - 使用 warn 色系 */}
             {pvs1Result.incompatible && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/30">
-                <p className="text-sm font-medium text-amber-800 dark:text-amber-300">{t('autopvs1.incompatible')}</p>
+              <div className="rounded-lg border border-warn-light bg-warn/10 p-4 dark:border-warn-dark dark:bg-warn/10">
+                <p className="text-sm font-medium text-warn-dark dark:text-warn-light">{t('autopvs1.incompatible')}</p>
               </div>
             )}
 
-            {/* Variant Info */}
+            {/* 变异信息 */}
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.variantInfo')}</h3>
+              <h3 className="mb-2 text-sm font-semibold text-base-700 dark:text-base-300">{t('autopvs1.variantInfo')}</h3>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {pvs1Result.variantType && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.variantType')}</p>
-                    <p className="font-mono text-sm font-semibold text-navy dark:text-white">{pvs1Result.variantType}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.variantType')}</p>
+                    <p className="font-mono text-sm font-semibold text-base dark:text-white">{pvs1Result.variantType}</p>
                   </div>
                 )}
                 {pvs1Result.gene && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.gene')}</p>
-                    <p className="font-mono text-sm font-semibold text-cyan dark:text-cyan-400">{pvs1Result.gene}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.gene')}</p>
+                    <p className="font-mono text-sm font-semibold text-pos dark:text-pos-light">{pvs1Result.gene}</p>
                   </div>
                 )}
                 {pvs1Result.pli !== null && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.pli')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.pli}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.pli')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.pli}</p>
                   </div>
                 )}
                 {pvs1Result.haploinsufficiency && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.haploinsufficiency')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.haploinsufficiency}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.haploinsufficiency')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.haploinsufficiency}</p>
                   </div>
                 )}
                 {pvs1Result.chgvs && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.chgvs')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.chgvs}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.chgvs')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.chgvs}</p>
                   </div>
                 )}
                 {pvs1Result.phgvs && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.phgvs')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.phgvs}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.phgvs')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.phgvs}</p>
                   </div>
                 )}
                 {pvs1Result.exon && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.exon')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.exon}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.exon')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.exon}</p>
                   </div>
                 )}
                 {pvs1Result.intron && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('autopvs1.intron')}</p>
-                    <p className="font-mono text-sm text-navy dark:text-white">{pvs1Result.intron}</p>
+                    <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.intron')}</p>
+                    <p className="font-mono text-sm text-base dark:text-white">{pvs1Result.intron}</p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* PVS1 Flowchart */}
+            {/* PVS1 流程图 */}
             {!pvs1Result.incompatible && pvs1Result.flowchartTree.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.flowchart')}</h3>
-                <div className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
+                <h3 className="mb-2 text-sm font-semibold text-base-700 dark:text-base-300">{t('autopvs1.flowchart')}</h3>
+                <div className="rounded-lg border border-base-800 dark:border-base-700 p-4">
                   {pvs1Result.preliminaryPath && (
-                    <div className="mb-3 rounded bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5">
-                      <span className="text-xs text-gray-600 dark:text-gray-400">{t('autopvs1.preliminaryPath')}: </span>
-                      <span className="font-mono text-xs font-bold text-navy dark:text-white">{pvs1Result.preliminaryPath}</span>
+                    <div className="mb-3 rounded bg-base-800/50 dark:bg-base-700/50 px-3 py-1.5">
+                      <span className="text-xs text-base-600 dark:text-base-400">{t('autopvs1.preliminaryPath')}: </span>
+                      <span className="font-mono text-xs font-bold text-base dark:text-white">{pvs1Result.preliminaryPath}</span>
                     </div>
                   )}
                   <div className="space-y-1">
@@ -545,91 +551,91 @@ export default function VariantDetail() {
                     ))}
                   </div>
                   {pvs1Result.footnotes.length > 0 && (
-                    <div className="mt-3 space-y-1.5 border-t border-gray-100 dark:border-gray-700 pt-3">
+                    <div className="mt-3 space-y-1.5 border-t border-base-800 dark:border-base-700 pt-3">
                       {pvs1Result.footnotes.map((fn) => (
                         <div key={fn.number} className="flex items-start gap-2 text-xs">
-                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-cyan-100 font-bold text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400">
+                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-pos/10 font-bold text-pos-dark dark:bg-pos/10 dark:text-pos-light">
                             {fn.number}
                           </span>
-                          <p className="text-gray-600 dark:text-gray-400">{fn.text}</p>
+                          <p className="text-base-600 dark:text-base-400">{fn.text}</p>
                         </div>
                       ))}
                     </div>
                   )}
                   {pvs1Result.preliminaryStrength && (
-                    <div className="mt-3 flex items-center gap-2 rounded-lg bg-cyan-50 px-3 py-2 dark:bg-cyan-900/20">
-                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{t('autopvs1.preliminaryStrength')}:</span>
-                      <span className="text-sm font-bold text-cyan-700 dark:text-cyan-400">{pvs1Result.preliminaryStrength}</span>
+                    <div className="mt-3 flex items-center gap-2 rounded-lg bg-pos/10 px-3 py-2 dark:bg-pos/10">
+                      <span className="text-xs font-medium text-base-600 dark:text-base-400">{t('autopvs1.preliminaryStrength')}:</span>
+                      <span className="text-sm font-bold text-pos-dark dark:text-pos-light">{pvs1Result.preliminaryStrength}</span>
                     </div>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Disease Mechanism */}
+            {/* 疾病机制表格 */}
             {pvs1Result.diseaseMechanisms.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">{t('autopvs1.diseaseMechanism')}</h3>
+                <h3 className="mb-2 text-sm font-semibold text-base-700 dark:text-base-300">{t('autopvs1.diseaseMechanism')}</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 dark:border-gray-700">
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.gene')}</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.disease')}</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.inheritance')}</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.clinicalValidity')}</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.consideration')}</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{t('autopvs1.adjustedStrength')}</th>
+                      <tr className="border-b border-base-700 dark:border-base-700">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.gene')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.disease')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.inheritance')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.clinicalValidity')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.consideration')}</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-base-500 dark:text-base-400">{t('autopvs1.adjustedStrength')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {pvs1Result.diseaseMechanisms.map((dm, idx) => (
-                        <tr key={idx} className="border-b border-gray-100 dark:border-gray-700/50">
-                          <td className="px-3 py-2 font-mono text-xs text-cyan dark:text-cyan-400">{dm.gene}</td>
-                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.disease}</td>
-                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.inheritance}</td>
-                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.clinicalValidity}</td>
-                          <td className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300">{dm.consideration}</td>
-                          <td className="px-3 py-2 text-xs font-bold text-cyan-700 dark:text-cyan-400">{dm.adjustedStrength}</td>
+                        <tr key={idx} className="border-b border-base-800/50 dark:border-base-700/50">
+                          <td className="px-3 py-2 font-mono text-xs text-pos dark:text-pos-light">{dm.gene}</td>
+                          <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.disease}</td>
+                          <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.inheritance}</td>
+                          <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.clinicalValidity}</td>
+                          <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.consideration}</td>
+                          <td className="px-3 py-2 text-xs font-bold text-pos-dark dark:text-pos-light">{dm.adjustedStrength}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 {pvs1Result.adjustedStrength && (
-                  <div className="mt-3 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-900/20">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{t('autopvs1.adjustedStrength')}:</span>
-                    <span className="text-sm font-bold text-blue-700 dark:text-blue-400">{pvs1Result.adjustedStrength}</span>
+                  <div className="mt-3 flex items-center gap-2 rounded-lg bg-pos/10 px-3 py-2 dark:bg-pos/10">
+                    <span className="text-xs font-medium text-base-600 dark:text-base-400">{t('autopvs1.adjustedStrength')}:</span>
+                    <span className="text-sm font-bold text-pos-dark dark:text-pos-light">{pvs1Result.adjustedStrength}</span>
                   </div>
                 )}
               </div>
             )}
 
-            {/* External Links */}
+            {/* 外部链接 */}
             <div className="flex flex-wrap gap-3">
               {pvs1Result.autopvs1Url && (
                 <a
                   href={pvs1Result.autopvs1Url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-1.5 text-xs font-medium text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700"
                 >
                   <ExternalLink size={12} />
                   {t('autopvs1.openInNewTab')}
                 </a>
               )}
               {pvs1Result.externalLinks.gnomAD && (
-                <a href={pvs1Result.externalLinks.gnomAD} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <a href={pvs1Result.externalLinks.gnomAD} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-1.5 text-xs font-medium text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700">
                   gnomAD
                 </a>
               )}
               {pvs1Result.externalLinks.clinVar && (
-                <a href={pvs1Result.externalLinks.clinVar} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <a href={pvs1Result.externalLinks.clinVar} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-1.5 text-xs font-medium text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700">
                   ClinVar
                 </a>
               )}
               {pvs1Result.externalLinks.omim && (
-                <a href={pvs1Result.externalLinks.omim} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <a href={pvs1Result.externalLinks.omim} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-base-600 px-3 py-1.5 text-xs font-medium text-base-700 hover:bg-base-800/30 dark:border-base-600 dark:text-base-300 dark:hover:bg-base-700">
                   OMIM
                 </a>
               )}
@@ -639,20 +645,20 @@ export default function VariantDetail() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Reviews */}
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.reviews')}</h2>
+        {/* 审核记录 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.reviews')}</h2>
 
           {canReview && variant.status === 'pending' && (
-            <div className="mb-4 rounded-lg border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-800 dark:bg-cyan-900/30">
-              <h3 className="mb-2 text-sm font-medium text-navy dark:text-white">{t('variantDetail.submitReview')}</h3>
+            <div className="mb-4 rounded-lg border border-pos-light bg-pos/10 p-4 dark:border-pos-dark dark:bg-pos/10">
+              <h3 className="mb-2 text-sm font-medium text-base dark:text-white">{t('variantDetail.submitReview')}</h3>
               <div className="mb-2 flex gap-2">
                 <button
                   onClick={() => setReviewStatus('approved')}
                   className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium ${
                     reviewStatus === 'approved'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      ? 'bg-pos-dark text-white'
+                      : 'bg-base-800 text-base-600 hover:bg-base-700 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
                   }`}
                 >
                   <CheckCircle size={14} />
@@ -662,8 +668,8 @@ export default function VariantDetail() {
                   onClick={() => setReviewStatus('rejected')}
                   className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium ${
                     reviewStatus === 'rejected'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      ? 'bg-neg-dark text-white'
+                      : 'bg-base-800 text-base-600 hover:bg-base-700 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
                   }`}
                 >
                   <XCircle size={14} />
@@ -675,12 +681,12 @@ export default function VariantDetail() {
                 onChange={(e) => setReviewComment(e.target.value)}
                 rows={2}
                 placeholder={t('variantDetail.addComment')}
-                className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="mb-2 w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-2 text-sm text-white focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white"
               />
               <button
                 onClick={handleSubmitReview}
                 disabled={submittingReview}
-                className="rounded-lg bg-cyan px-4 py-2 text-sm font-medium text-white hover:bg-cyan-600 disabled:opacity-50"
+                className="glow-btn rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
               >
                 {submittingReview ? t('variantDetail.submitting') : t('variantDetail.submitReview')}
               </button>
@@ -688,18 +694,18 @@ export default function VariantDetail() {
           )}
 
           {variant.reviews?.length === 0 ? (
-            <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('variantDetail.noReviews')}</p>
+            <p className="py-4 text-center text-sm text-base-400 dark:text-base-500">{t('variantDetail.noReviews')}</p>
           ) : (
             <div className="space-y-3">
               {variant.reviews?.map((review) => (
-                <div key={review.id} className="rounded-lg border border-gray-100 dark:border-gray-700 p-3">
+                <div key={review.id} className="rounded-lg border border-base-800 dark:border-base-700 p-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-navy dark:text-white">{review.reviewerName || ''}</span>
+                    <span className="text-sm font-medium text-base dark:text-white">{review.reviewerName || ''}</span>
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
                         review.status === 'approved'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                          ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
+                          : 'bg-neg/10 text-neg-dark dark:bg-neg/10 dark:text-neg-light'
                       }`}
                     >
                       {review.status === 'approved' ? <CheckCircle size={12} /> : <XCircle size={12} />}
@@ -707,9 +713,9 @@ export default function VariantDetail() {
                     </span>
                   </div>
                   {review.comment && (
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{review.comment}</p>
+                    <p className="mt-1 text-sm text-base-600 dark:text-base-400">{review.comment}</p>
                   )}
-                  <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                  <p className="mt-1 text-xs text-base-400 dark:text-base-500">
                     {new Date(review.created_at).toLocaleString()}
                   </p>
                 </div>
@@ -718,20 +724,22 @@ export default function VariantDetail() {
           )}
         </div>
 
-        {/* History */}
-        <div className="rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-navy dark:text-white">{t('variantDetail.history')}</h2>
+        {/* 历史记录 - 玻璃态卡片 */}
+        <div className="glass rounded-2xl p-6 animate-fade-in">
+          <h2 className="mb-4 font-display text-lg font-semibold text-base dark:text-white">{t('variantDetail.history')}</h2>
           {variant.history?.length === 0 ? (
-            <p className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">{t('variantDetail.noHistory')}</p>
+            <p className="py-4 text-center text-sm text-base-400 dark:text-base-500">{t('variantDetail.noHistory')}</p>
           ) : (
             <div className="relative space-y-0">
-              <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-600" />
+              {/* 时间线竖线 */}
+              <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-base-700 dark:bg-base-600" />
               {variant.history?.map((record) => (
                 <div key={record.id} className="relative flex gap-3 pb-4 pl-8">
-                  <div className="absolute left-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-cyan bg-white dark:bg-gray-800" />
+                  {/* 时间线节点 - pos 色彩 */}
+                  <div className="absolute left-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-pos bg-base-800 dark:bg-base-800" />
                   <div>
-                    <p className="text-sm font-medium text-navy dark:text-white">{record.action}</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <p className="text-sm font-medium text-base dark:text-white">{record.action}</p>
+                    <p className="text-xs text-base-600 dark:text-base-400">
                       {record.changes
                         ? (Array.isArray(record.changes)
                             ? record.changes.join(', ')
@@ -740,7 +748,7 @@ export default function VariantDetail() {
                               : String(record.changes))
                         : ''}
                     </p>
-                    <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mt-0.5 text-xs text-base-400 dark:text-base-500">
                       {(record.userName || '')} · {new Date(record.created_at).toLocaleString()}
                     </p>
                   </div>
@@ -751,7 +759,7 @@ export default function VariantDetail() {
         </div>
       </div>
 
-      {/* Delete Confirm Modal */}
+      {/* 删除确认弹窗 */}
       <ConfirmModal
         open={showDeleteConfirm}
         message={t('variantDetail.deleteConfirm')}
@@ -765,6 +773,7 @@ export default function VariantDetail() {
   );
 }
 
+/* 信息字段组件 - 编辑/查看模式切换 */
 function InfoField({
   label,
   value,
@@ -784,7 +793,7 @@ function InfoField({
 }) {
   return (
     <div>
-      <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="mb-1 text-xs font-medium text-base-500 dark:text-base-400">{label}</p>
       {editing ? (
         <input
           type={type}
@@ -795,10 +804,10 @@ function InfoField({
               [field]: type === 'number' ? Number(e.target.value) : e.target.value,
             }))
           }
-          className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-cyan focus:outline-none focus:ring-1 focus:ring-cyan dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-cyan-400 dark:focus:ring-cyan-400"
+          className="w-full rounded-xl border border-base-700 bg-base-800/50 px-3 py-1.5 text-sm text-white focus:border-action focus:outline-none focus:ring-2 focus:ring-action/20 dark:text-white dark:focus:border-action dark:focus:ring-action/20"
         />
       ) : (
-        <p className="font-mono text-sm text-navy dark:text-white">{value}</p>
+        <p className="font-mono text-sm text-base dark:text-white">{value}</p>
       )}
     </div>
   );
@@ -811,9 +820,9 @@ function FlowchartNodeInline({ node, depth }: { node: PVS1FlowchartNode; depth: 
 
   return (
     <div style={{ paddingLeft: depth > 0 ? '20px' : '0' }}>
-      <div className={`flex items-start gap-2 py-0.5 ${isStrength ? 'rounded bg-cyan-50 dark:bg-cyan-900/20 px-2' : ''}`}>
-        {!isStrength && depth > 0 && <span className="mt-1 text-gray-400">·</span>}
-        <p className={`text-xs ${isStrength ? 'font-bold text-cyan-700 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>
+      <div className={`flex items-start gap-2 py-0.5 ${isStrength ? 'rounded bg-pos/10 dark:bg-pos/10 px-2' : ''}`}>
+        {!isStrength && depth > 0 && <span className="mt-1 text-base-400">·</span>}
+        <p className={`text-xs ${isStrength ? 'font-bold text-pos-dark dark:text-pos-light' : 'text-base-700 dark:text-base-300'}`}>
           {node.text}
         </p>
       </div>

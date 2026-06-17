@@ -2,10 +2,36 @@ import { Router, type Request, type Response } from 'express'
 
 const router = Router()
 
-// GeneBe API 配置
+// GeneBe API 配置 - 从环境变量读取
 const GENEBE_API_BASE = 'https://api.genebe.net/cloud/api-public/v1'
-const GENEBE_EMAIL = '2514560667@qq.com'
-const GENEBE_API_KEY = 'ak-jV2sYrfwbpkFWRV0wz7TS7FnT7sBdUEN'
+
+export function getGenebeCredentials(): { email: string; apiKey: string } {
+  const email = process.env.GENEBE_EMAIL
+  const apiKey = process.env.GENEBE_API_KEY
+  if (!email || !apiKey) {
+    throw new Error('GENEBE_EMAIL and GENEBE_API_KEY environment variables are required')
+  }
+  return { email, apiKey }
+}
+
+/**
+ * 验证变异输入，防止 SSRF 和注入
+ */
+function validateVariantInput(chr: string, pos: string, ref: string, alt: string): string | null {
+  if (!/^[0-9XYMT]{1,3}$/i.test(chr)) {
+    return '染色体格式无效'
+  }
+  if (!/^\d+$/.test(pos)) {
+    return '位置必须为正整数'
+  }
+  if (!/^[ATCG]+$/i.test(ref)) {
+    return '参考等位基因只能包含 ATCG'
+  }
+  if (!/^[ATCG]+$/i.test(alt)) {
+    return '变异等位基因只能包含 ATCG'
+  }
+  return null
+}
 
 /**
  * 处理 GeneBe API 返回结果：0-based→1-based，chr 前缀，保留用户输入的 ref/alt
@@ -58,15 +84,21 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     // 使用 POST 方式调用 GeneBe API（字符串数组格式，用 - 分隔）
     // GET 方式用 : 分隔时某些变异会返回空结果
     const chrNum = (chr as string).replace(/^chr/i, '')
+    const validationError = validateVariantInput(chrNum, pos as string, ref as string, alt as string)
+    if (validationError) {
+      res.status(400).json({ success: false, error: validationError })
+      return
+    }
     const queryStr = `${chrNum}-${pos}-${ref}-${alt}`
     const url = `${GENEBE_API_BASE}/liftover?from=${from}&dest=${dest}`
 
+    const { email: genebeEmail, apiKey: genebeApiKey } = getGenebeCredentials()
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + Buffer.from(`${GENEBE_EMAIL}:${GENEBE_API_KEY}`).toString('base64'),
+        'Authorization': 'Basic ' + Buffer.from(`${genebeEmail}:${genebeApiKey}`).toString('base64'),
       },
       body: JSON.stringify([queryStr]),
     })
@@ -127,20 +159,25 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     // 构造 GeneBe 格式的字符串数组（用 - 分隔）
     const genebeQueries = variants.map(v => {
       const chrNum = (v.chr || v.chromosome || '').replace(/^chr/i, '')
-      const pos = v.pos || v.position
-      const ref = v.ref || v.ref_allele
-      const alt = v.alt || v.alt_allele
+      const pos = String(v.pos || v.position || '')
+      const ref = v.ref || v.ref_allele || ''
+      const alt = v.alt || v.alt_allele || ''
+      const err = validateVariantInput(chrNum, pos, ref, alt)
+      if (err) {
+        throw new Error(`变异 ${chrNum}-${pos}-${ref}-${alt}: ${err}`)
+      }
       return `${chrNum}-${pos}-${ref}-${alt}`
     })
 
     const url = `${GENEBE_API_BASE}/liftover?from=${from}&dest=${dest}`
 
+    const { email: genebeEmail, apiKey: genebeApiKey } = getGenebeCredentials()
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + Buffer.from(`${GENEBE_EMAIL}:${GENEBE_API_KEY}`).toString('base64'),
+        'Authorization': 'Basic ' + Buffer.from(`${genebeEmail}:${genebeApiKey}`).toString('base64'),
       },
       body: JSON.stringify(genebeQueries),
     })

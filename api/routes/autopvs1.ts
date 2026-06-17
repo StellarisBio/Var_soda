@@ -5,6 +5,25 @@ const router = Router()
 const AUTOPVS1_BASE = 'https://autopvs1.bgi.com'
 
 /**
+ * 验证变异输入，防止 SSRF 和注入
+ */
+function validateVariantInput(chr: string, pos: string, ref: string, alt: string): string | null {
+  if (!/^[0-9XYMT]{1,3}$/i.test(chr)) {
+    return '染色体格式无效'
+  }
+  if (!/^\d+$/.test(pos)) {
+    return '位置必须为正整数'
+  }
+  if (!/^[ATCG]+$/i.test(ref)) {
+    return '参考等位基因只能包含 ATCG'
+  }
+  if (!/^[ATCG]+$/i.test(alt)) {
+    return '变异等位基因只能包含 ATCG'
+  }
+  return null
+}
+
+/**
  * 将 GRCh37/GRCh38 转换为 AutoPVS1 使用的 hg19/hg38
  */
 function toHgVersion(build: string): string {
@@ -390,6 +409,13 @@ router.get('/analyze', async (req: Request, res: Response): Promise<void> => {
     // 去除染色体前缀的 chr
     const chrNum = (chromosome as string).replace(/^chr/i, '')
 
+    // 验证输入，防止 SSRF
+    const validationError = validateVariantInput(chrNum, position as string, ref as string, alt as string)
+    if (validationError) {
+      res.status(400).json({ success: false, error: validationError })
+      return
+    }
+
     // 构造 AutoPVS1 URL
     const url = `${AUTOPVS1_BASE}/variant/${hgVersion}/${chrNum}-${position}-${ref}-${alt}`
 
@@ -442,7 +468,8 @@ router.post('/save', async (req: Request, res: Response): Promise<void> => {
     }
 
     const jwt = (await import('jsonwebtoken')).default
-    const jwtSecret = process.env.JWT_SECRET || 'wes-variant-db-secret-key-2024'
+    const { getJwtSecret } = await import('../middleware/auth.js')
+    const jwtSecret = getJwtSecret()
     let userId: number
     try {
       const decoded = jwt.verify(authHeader.slice(7), jwtSecret) as any

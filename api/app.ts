@@ -8,6 +8,7 @@ import express, {
   type NextFunction,
 } from 'express'
 import cors from 'cors'
+import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 import path from 'path'
 import fs from 'fs'
@@ -34,9 +35,41 @@ if (!fs.existsSync(uploadsDir)) {
 
 const app: express.Application = express()
 
-app.use(cors())
+// CORS 配置 - 使用白名单而非全开放
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(s => s.trim())
+  : ['http://localhost:5173', 'http://localhost:3001']
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+}))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+// 速率限制：认证端点（登录、注册、重置密码）- 15 分钟内最多 5 次
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { success: false, error: '请求过于频繁，请15分钟后重试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+// 速率限制：验证码发送 - 每分钟最多 3 次
+const verificationLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 3,
+  message: { success: false, error: '发送过于频繁，请稍后重试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
 
 // 静态文件服务：头像
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
@@ -44,6 +77,14 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 /**
  * API Routes
  */
+// 仅在生产环境应用速率限制，开发环境允许无限次登录尝试
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/auth/login', authLimiter)
+  app.use('/api/auth/register', authLimiter)
+  app.use('/api/auth/reset-password', authLimiter)
+  app.use('/api/verification/send', verificationLimiter)
+}
+
 app.use('/api/auth', authRoutes)
 app.use('/api/variants', variantRoutes)
 app.use('/api/users', userRoutes)
