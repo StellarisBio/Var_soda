@@ -308,31 +308,29 @@ export default function VariantDetail() {
                   type="button"
                   onClick={() => setForm((f: any) => ({ ...f, genome_build: 'GRCh38' }))}
                   className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors ${
-                    form.genome_build === 'GRCh38'
-                      ? 'bg-pos text-white'
-                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
-                  }`}
-                >
-                  GRCh38
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setForm((f: any) => ({ ...f, genome_build: 'GRCh37' }))}
-                  className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
-                    form.genome_build === 'GRCh37'
-                      ? 'bg-pos text-white'
-                      : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
-                  }`}
+                      form.genome_build === 'GRCh38'
+                        ? 'text-white'
+                        : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
+                    }`}
+                    style={form.genome_build === 'GRCh38' ? {backgroundColor: '#5B9CF6'} : {}}
+                  >
+                    GRCh38
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f: any) => ({ ...f, genome_build: 'GRCh37' }))}
+                    className={`flex-1 px-3 py-1.5 text-sm font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
+                      form.genome_build === 'GRCh37'
+                        ? 'text-white'
+                        : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600'
+                    }`}
+                    style={form.genome_build === 'GRCh37' ? {backgroundColor: '#FFB627', color: '#1F2328'} : {}}
                 >
                   GRCh37
                 </button>
               </div>
             ) : (
-              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                (variant.genome_build || 'GRCh38') === 'GRCh38'
-                  ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
-                  : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
-              }`}>
+              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style={(variant.genome_build || 'GRCh38') === 'GRCh38' ? {backgroundColor: 'rgba(91,156,246,0.1)', color: '#5B9CF6'} : {backgroundColor: 'rgba(255,182,39,0.1)', color: '#FFB627'}}>
                 {variant.genome_build || 'GRCh38'}
               </span>
             )}
@@ -492,7 +490,7 @@ export default function VariantDetail() {
                 {pvs1Result.gene && (
                   <div>
                     <p className="text-xs text-base-500 dark:text-base-400">{t('autopvs1.gene')}</p>
-                    <p className="font-mono text-sm font-semibold text-pos dark:text-pos-light">{pvs1Result.gene}</p>
+                    <p className="font-mono text-sm font-semibold" style={{ color: '#5B9CF6' }}>{pvs1Result.gene}</p>
                   </div>
                 )}
                 {pvs1Result.pli !== null && (
@@ -591,7 +589,7 @@ export default function VariantDetail() {
                     <tbody>
                       {pvs1Result.diseaseMechanisms.map((dm, idx) => (
                         <tr key={idx} className="border-b border-base-800/50 dark:border-base-700/50">
-                          <td className="px-3 py-2 font-mono text-xs text-pos dark:text-pos-light">{dm.gene}</td>
+                          <td className="px-3 py-2 font-mono text-xs" style={{ color: '#5B9CF6' }}>{dm.gene}</td>
                           <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.disease}</td>
                           <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.inheritance}</td>
                           <td className="px-3 py-2 text-xs text-base-700 dark:text-base-300">{dm.clinicalValidity}</td>
@@ -736,7 +734,7 @@ export default function VariantDetail() {
               {variant.history?.map((record) => (
                 <div key={record.id} className="relative flex gap-3 pb-4 pl-8">
                   {/* 时间线节点 - pos 色彩 */}
-                  <div className="absolute left-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-pos bg-base-800 dark:bg-base-800" />
+                  <div className="absolute left-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-action bg-base-800 dark:bg-base-800" />
                   <div>
                     <p className="text-sm font-medium text-base dark:text-white">{record.action}</p>
                     <p className="text-xs text-base-600 dark:text-base-400">

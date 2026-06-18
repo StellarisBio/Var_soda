@@ -1,8 +1,8 @@
 const ACMG_COLORS: Record<string, string> = {
   'Pathogenic': 'bg-acmg-pathogenic text-white',
-  'Likely Pathogenic': 'bg-acmg-likelyPathogenic text-white',
+  'Likely Pathogenic': 'bg-acmg-likely-pathogenic text-white',
   'VUS': 'bg-acmg-vus text-white',
-  'Likely Benign': 'bg-acmg-likelyBenign text-white',
+  'Likely Benign': 'bg-acmg-likely-benign text-white',
   'Benign': 'bg-acmg-benign text-white',
 };
 

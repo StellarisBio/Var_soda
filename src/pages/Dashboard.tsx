@@ -8,11 +8,11 @@ import StatusBadge from '@/components/StatusBadge';
 import { useI18n } from '@/hooks/useI18n';
 
 const ACMG_PIE_COLORS: Record<string, string> = {
-  'Pathogenic': '#dc2626',
-  'Likely Pathogenic': '#ea580c',
-  'VUS': '#ca8a04',
-  'Likely Benign': '#2563eb',
-  'Benign': '#16a34a',
+  'Pathogenic': '#FF6B6B',
+  'Likely Pathogenic': '#FFB627',
+  'VUS': '#7C8AFF',
+  'Likely Benign': '#06D6A0',
+  'Benign': '#5B9CF6',
 };
 
 export default function Dashboard() {
@@ -204,7 +204,7 @@ export default function Dashboard() {
               {recentVariants.map((v) => (
                 /* 表格行 - hover 时显示半透明高亮 */
                 <tr key={v.id} className="border-b border-base-800/50 transition-colors hover:bg-base-800/30">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-pos dark:text-pos-light">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold" style={{ color: '#5B9CF6' }}>
                     {v.gene}
                   </td>
                   <td className="px-4 py-3">
@@ -213,16 +213,16 @@ export default function Dashboard() {
                     </Link>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.transcript || ''}</td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded px-1.5 py-0.5 font-mono text-xs font-medium" style={{backgroundColor: 'rgba(91,156,246,0.1)', color: '#5B9CF6'}}>{v.ref_allele}</span></td>
                   <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-neg/10 px-1.5 py-0.5 font-mono text-xs font-medium text-neg-dark dark:bg-neg/10 dark:text-neg-light">{v.alt_allele}</span></td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.cdna_change || ''}</td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       (v.genome_build || 'GRCh38') === 'GRCh38'
-                        ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
-                        : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
-                    }`}>
+                        ? 'bg-warn/10 text-warn-dark dark:bg-warn/10 dark:text-warn-light'
+                        : 'bg-neg/10 text-neg-dark dark:bg-neg/10 dark:text-neg-light'
+                    }`} style={(v.genome_build || 'GRCh38') === 'GRCh38' ? {backgroundColor: 'rgba(91,156,246,0.1)', color: '#5B9CF6'} : {backgroundColor: 'rgba(255,182,39,0.1)', color: '#FFB627'}}>
                       {v.genome_build || 'GRCh38'}
                     </span>
                   </td>
@@ -230,7 +230,7 @@ export default function Dashboard() {
                     {v.evidence_codes && v.evidence_codes.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {v.evidence_codes.map((code) => (
-                          <span key={code} className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">
+                          <span key={code} className="inline-flex items-center rounded bg-action/10 px-1.5 py-0.5 font-mono text-xs font-medium text-action-dark dark:bg-action/10 dark:text-action-light">
                             {code}
                           </span>
                         ))}
@@ -258,7 +258,7 @@ export default function Dashboard() {
   );
 }
 
-/* 统计卡片组件 - 玻璃态设计，按分类使用不同色调 glass 类 */
+/* 统计卡片组件 - 临床青蓝毛玻璃，顶部强调色条 + 悬浮发光 */
 function StatCard({
   icon,
   label,
@@ -273,7 +273,9 @@ function StatCard({
   iconColor: string;
 }) {
   return (
-    <div className={`${glassClass} rounded-2xl p-5 animate-fade-in`}>
+    <div className={`${glassClass} relative overflow-hidden rounded-2xl p-5 animate-fade-in transition-all hover:-translate-y-0.5 hover:border-action/40`}>
+      {/* 顶部强调色条 */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-action to-transparent opacity-50" />
       <div className={`mb-3 inline-flex rounded-lg p-2.5 ${iconColor}`}>{icon}</div>
       <p className="font-mono text-2xl font-bold text-base dark:text-white">{value}</p>
       <p className="mt-1 text-sm text-base-500 dark:text-base-400">{label}</p>

@@ -219,9 +219,10 @@ export default function Variants() {
             onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh38' ? '' : 'GRCh38'); setPage(1); }}
             className={`px-3 py-2 text-xs font-semibold transition-colors ${
               genomeBuildFilter === 'GRCh38'
-                ? 'bg-pos text-white'
+                ? 'text-white'
                 : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 dark:hover:bg-base-700'
             }`}
+            style={genomeBuildFilter === 'GRCh38' ? {backgroundColor: '#5B9CF6'} : {}}
           >
             GRCh38
           </button>
@@ -229,9 +230,10 @@ export default function Variants() {
             onClick={() => { setGenomeBuildFilter(genomeBuildFilter === 'GRCh37' ? '' : 'GRCh37'); setPage(1); }}
             className={`px-3 py-2 text-xs font-semibold transition-colors border-l border-base-600 dark:border-base-600 ${
               genomeBuildFilter === 'GRCh37'
-                ? 'bg-pos text-white'
+                ? 'text-white'
                 : 'bg-base-800/50 text-base-600 hover:bg-base-800 dark:bg-base-800 dark:text-base-300 dark:hover:bg-base-700'
             }`}
+            style={genomeBuildFilter === 'GRCh37' ? {backgroundColor: '#FFB627', color: '#1F2328'} : {}}
           >
             GRCh37
           </button>
@@ -314,7 +316,7 @@ export default function Variants() {
               variants.map((v) => (
                 /* 表格行 - hover 时显示半透明高亮 */
                 <tr key={v.id} className="border-b border-base-800/50 transition-colors hover:bg-base-800/30">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-pos dark:text-pos-light">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold" style={{ color: '#5B9CF6' }}>
                     {v.gene}
                   </td>
                   <td className="px-4 py-3">
@@ -323,16 +325,12 @@ export default function Variants() {
                     </Link>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.transcript || ''}</td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">{v.ref_allele}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center rounded px-1.5 py-0.5 font-mono text-xs font-medium" style={{backgroundColor: 'rgba(91,156,246,0.1)', color: '#5B9CF6'}}>{v.ref_allele}</span></td>
                   <td className="px-4 py-3"><span className="inline-flex items-center rounded bg-neg/10 px-1.5 py-0.5 font-mono text-xs font-medium text-neg-dark dark:bg-neg/10 dark:text-neg-light">{v.alt_allele}</span></td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.cdna_change || ''}</td>
                   <td className="px-4 py-3 font-mono text-xs text-base-600 dark:text-base-400">{v.protein_change || ''}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                      (v.genome_build || 'GRCh38') === 'GRCh38'
-                        ? 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light'
-                        : 'bg-sec/10 text-sec-dark dark:bg-sec/10 dark:text-sec-light'
-                    }`}>
+                    <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style={(v.genome_build || 'GRCh38') === 'GRCh38' ? {backgroundColor: 'rgba(91,156,246,0.1)', color: '#5B9CF6'} : {backgroundColor: 'rgba(255,182,39,0.1)', color: '#FFB627'}}>
                       {v.genome_build || 'GRCh38'}
                     </span>
                   </td>
@@ -340,7 +338,7 @@ export default function Variants() {
                     {v.evidence_codes && v.evidence_codes.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {v.evidence_codes.map((code) => (
-                          <span key={code} className="inline-flex items-center rounded bg-pos/10 px-1.5 py-0.5 font-mono text-xs font-medium text-pos-dark dark:bg-pos/10 dark:text-pos-light">
+                          <span key={code} className="inline-flex items-center rounded bg-action/10 px-1.5 py-0.5 font-mono text-xs font-medium text-action-dark dark:bg-action/10 dark:text-action-light">
                             {code}
                           </span>
                         ))}

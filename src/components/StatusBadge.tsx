@@ -1,9 +1,9 @@
 import { useI18n } from '@/hooks/useI18n';
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-  approved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-  rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  pending: 'bg-warn/10 text-warn-dark dark:bg-warn/10 dark:text-warn-light',
+  approved: 'bg-pos/10 text-pos-dark dark:bg-pos/10 dark:text-pos-light',
+  rejected: 'bg-neg/10 text-neg-dark dark:bg-neg/10 dark:text-neg-light',
 };
 
 interface StatusBadgeProps {

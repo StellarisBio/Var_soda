@@ -254,7 +254,7 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo 区域：DNA 图标用 from-nav to-action 渐变背景包裹 + animate-float 浮动 + gradient-text 渐变文字 */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex animate-float items-center justify-center rounded-2xl bg-gradient-to-br from-nav to-action p-4">
+          <div className="mb-4 inline-flex animate-float items-center justify-center rounded-2xl bg-gradient-to-br from-action to-info p-4">
             <Dna size={40} className="text-white" />
           </div>
           <h1 className="gradient-text font-display text-3xl font-bold">
@@ -344,7 +344,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={openResetModal}
-                    className="text-sm font-medium text-pos-light hover:underline"
+                    className="text-sm font-medium text-action-light hover:underline"
                   >
                     {t('auth.forgotPassword')}
                   </button>
@@ -412,7 +412,7 @@ export default function Login() {
 
           <p className="mt-6 text-center text-sm text-base-400">
             {t('auth.noAccount')}{' '}
-            <Link to="/register" className="font-medium text-pos-light hover:underline">
+            <Link to="/register" className="font-medium text-action-light hover:underline">
               {t('auth.goToRegister')}
             </Link>
           </p>
@@ -425,7 +425,7 @@ export default function Login() {
           <div className="glass w-full max-w-md rounded-xl p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <KeyRound size={20} className="text-pos-light" />
+                <KeyRound size={20} className="text-action-light" />
                 <h3 className="font-display text-lg font-semibold text-base-100">{t('auth.resetPasswordTitle')}</h3>
               </div>
               <button
@@ -467,7 +467,7 @@ export default function Login() {
             {resetSuccess ? (
               <div className="space-y-4">
                 {/* 成功提示 - bg-pos/10 text-pos-light */}
-                <div className="rounded-lg bg-pos/10 px-4 py-3 text-sm text-pos-light">
+                <div className="rounded-lg bg-action/10 px-4 py-3 text-sm text-action-light">
                   {t('auth.resetSuccess')}
                 </div>
                 <button

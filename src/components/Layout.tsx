@@ -42,9 +42,9 @@ export default function Layout() {
         />
       )}
 
-      {/* 侧边栏 — 靛蓝玻璃态 */}
+      {/* 侧边栏 — 临床青蓝毛玻璃 */}
       <aside
-        className={`fixed z-40 flex h-full flex-col glass-nav border-r border-nav/20 transition-all duration-300 lg:relative lg:z-auto ${
+        className={`fixed z-40 flex h-full flex-col glass-nav border-r border-base-700 transition-all duration-300 lg:relative lg:z-auto ${
           collapsed ? 'w-16' : 'w-60'
         } ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
@@ -53,7 +53,7 @@ export default function Layout() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               {/* DNA 螺旋图标 — 渐变背景 + 浮动 */}
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-nav to-action animate-float">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-action to-info animate-float" style={{ boxShadow: '0 0 20px rgba(6, 214, 160, 0.25)' }}>
                 <Dna size={18} className="text-white" />
               </div>
               <h1 className="font-display text-lg font-bold gradient-text">Var_soda</h1>
@@ -84,15 +84,22 @@ export default function Layout() {
               to={item.to}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+                `relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-nav/15 text-nav-light border border-nav/20'
-                    : 'text-base-300 hover:bg-nav/8 hover:text-nav-light border border-transparent'
+                    ? 'bg-gradient-to-br from-action/10 to-info/5 text-action-light border border-action/25'
+                    : 'text-base-300 hover:bg-action/6 hover:text-action-light border border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`
               }
             >
-              <item.icon size={18} />
-              {!collapsed && <span>{t(item.labelKey)}</span>}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r bg-action" style={{ boxShadow: '0 0 8px #06D6A0' }} />
+                  )}
+                  <item.icon size={18} />
+                  {!collapsed && <span>{t(item.labelKey)}</span>}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -102,7 +109,7 @@ export default function Layout() {
           <NavLink
             to="/profile"
             onClick={() => setMobileOpen(false)}
-            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-base-300 hover:bg-sec/10 hover:text-sec-light ${
+            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-base-300 hover:bg-info/10 hover:text-info-light ${
               collapsed ? 'justify-center' : ''
             }`}
           >
@@ -123,8 +130,8 @@ export default function Layout() {
 
       {/* 主内容区 */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* 顶部标题栏 — 玻璃态 */}
-        <header className="flex h-16 items-center justify-between border-b border-base-700/50 glass px-4">
+        {/* 顶部标题栏 — 临床青蓝毛玻璃 */}
+        <header className="flex h-16 items-center justify-between border-b border-base-700 glass px-4">
           <div className="flex items-center gap-3">
             {/* 移动端菜单按钮 */}
             <button
@@ -134,8 +141,8 @@ export default function Layout() {
               <Menu size={20} />
             </button>
             <div className="hidden items-center gap-2 lg:flex">
-              <span className="font-display text-base font-semibold text-base-50">
-                {t('common.appName')}
+              <span className="font-display text-sm font-semibold text-base-300">
+                <span className="text-base-50">Var_soda</span> · WES 变异数据库
               </span>
             </div>
           </div>
@@ -145,7 +152,7 @@ export default function Layout() {
             {/* 主题切换 */}
             <button
               onClick={toggleTheme}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-base-700/50 px-2.5 py-1.5 text-xs font-medium text-base-300 hover:bg-base-700/50 hover:text-base-100"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-action/20 px-2.5 py-1.5 text-xs font-medium text-base-300 hover:bg-action/6 hover:text-action-light hover:border-action/40"
               title={theme === 'light' ? t('common.darkMode') : t('common.lightMode')}
             >
               {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
@@ -153,7 +160,7 @@ export default function Layout() {
             {/* 语言切换 */}
             <button
               onClick={toggleLang}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-base-700/50 px-2.5 py-1.5 text-xs font-medium text-base-300 hover:bg-base-700/50 hover:text-base-100"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-action/20 px-2.5 py-1.5 text-xs font-medium text-base-300 hover:bg-action/6 hover:text-action-light hover:border-action/40"
               title={t('common.language')}
             >
               <Languages size={14} />
@@ -162,21 +169,21 @@ export default function Layout() {
             {/* 用户信息 */}
             <NavLink
               to="/profile"
-              className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-base-700/50"
+              className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-action/6"
             >
               {user?.avatar ? (
                 <img
                   src={user.avatar}
                   alt={user.name}
-                  className="h-8 w-8 rounded-full object-cover ring-2 ring-nav/30"
+                  className="h-8 w-8 rounded-full object-cover ring-2 ring-action/30"
                 />
               ) : (
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-nav/10 text-nav-light">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-action to-info text-white" style={{ boxShadow: '0 0 0 2px rgba(6, 214, 160, 0.2)' }}>
                   <User size={16} />
                 </div>
               )}
               <span className="hidden text-sm font-medium text-base-50 sm:inline">{user?.name}</span>
-              <span className="rounded-md bg-sec/10 px-2 py-0.5 text-xs font-medium text-sec-light">
+              <span className="rounded-md bg-info/10 px-2 py-0.5 text-xs font-medium text-info-light">
                 {t(`roles.${user?.role}`)}
               </span>
             </NavLink>

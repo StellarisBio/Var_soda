@@ -1,17 +1,72 @@
-/* 导入字体：Manrope 标题(类苹果风格)、Outfit 正文、JetBrains Mono 代码 */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 全局过渡动画 — 确保所有颜色/边框变化平滑 */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+/* ============================================
+   Helix Lab — 螺旋实验室主题
+   Color inspiration: Sanger sequencing chromatogram
+   ============================================ */
+
+/* View Transitions API — 主题切换圆形扩散动画 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
+/* 主题切换平滑过渡 */
+body, .glass, .glass-nav, .glass-action, .glass-pos, .glass-warn, .glass-neg, .glass-info,
+.glow-btn, .gradient-text, header, aside, main, button, input, select, textarea, a, span, div, p, h1, h2, h3, h4, h5, h6, td, th, tr, table, label {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
+}
+
+/* ---- CSS 变量：深色模式（默认） ---- */
 :root {
-  /* 使用 Outfit 作为默认正文字体 */
+  --bg-primary: #0D1117;
+  --bg-secondary: #161B22;
+  --bg-tertiary: #1C2333;
+  --bg-elevated: #21283B;
+  --bg-hover: #283044;
+
+  --border-default: #30363D;
+  --border-muted: #21262D;
+  --border-accent: #06D6A0;
+
+  --text-primary: #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-tertiary: #6E7681;
+  --text-link: #06D6A0;
+
+  --accent-primary: #06D6A0;
+  --accent-secondary: #FFB627;
+  --accent-tertiary: #7C8AFF;
+
+  --acmg-pathogenic: #FF6B6B;
+  --acmg-likely-pathogenic: #FFB627;
+  --acmg-vus: #7C8AFF;
+  --acmg-likely-benign: #06D6A0;
+  --acmg-benign: #5B9CF6;
+
+  --base-A: #06D6A0;
+  --base-T: #FF6B6B;
+  --base-G: #FFB627;
+  --base-C: #7C8AFF;
+
+  --status-pending: #FFB627;
+  --status-approved: #06D6A0;
+  --status-rejected: #FF6B6B;
+
+  --success: #06D6A0;
+  --warning: #FFB627;
+  --danger: #FF6B6B;
+  --info: #7C8AFF;
+
+  --gene-accent: #5B9CF6;
+  --genome-grch37: #FFB627;
+  --genome-grch38: #5B9CF6;
+
   font-family: "Outfit", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -21,111 +76,213 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 深色主题为默认，使用深炭灰作为背景 */
+/* ---- CSS 变量：浅色模式 ---- */
+html:not(.dark) {
+  --bg-primary: #F6F8FA;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F0F3F6;
+  --bg-elevated: #FFFFFF;
+  --bg-hover: #EAEEF2;
+
+  --border-default: #D0D7DE;
+  --border-muted: #E8ECF0;
+  --border-accent: #0A9E7A;
+
+  --text-primary: #1F2328;
+  --text-secondary: #656D76;
+  --text-tertiary: #8C959F;
+  --text-link: #0A9E7A;
+
+  --accent-primary: #0A9E7A;
+  --accent-secondary: #D4940A;
+  --accent-tertiary: #5B6ABF;
+  --acmg-benign: #4A8AE6;
+  --gene-accent: #4A8AE6;
+  --genome-grch37: #D4940A;
+  --genome-grch38: #4A8AE6;
+}
+
+/* ---- 背景 ---- */
 body {
-  background-color: #0D1117;
-  color: #E2E8F0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  position: relative;
+  min-height: 100vh;
 }
 
-/* 浅色模式背景 */
-.light body {
-  background-color: #F1F5F9;
-  color: #1E293B;
+/* Sanger 色谱图波形背景 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.03;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 3px,
+      var(--base-A) 3px, var(--base-A) 4px,
+      transparent 4px, transparent 8px,
+      var(--base-T) 8px, var(--base-T) 9px,
+      transparent 9px, transparent 14px,
+      var(--base-G) 14px, var(--base-G) 15px,
+      transparent 15px, transparent 19px,
+      var(--base-C) 19px, var(--base-C) 20px,
+      transparent 20px, transparent 28px
+    );
+  pointer-events: none;
 }
 
-/* 玻璃态卡片 — 通用 */
+/* 精密刻度线 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.04;
+  background-image:
+    linear-gradient(var(--accent-primary) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-primary) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+html:not(.dark) body::before { opacity: 0.015; }
+html:not(.dark) body::after { opacity: 0.03; }
+
+/* ---- 浅色模式 body 背景覆盖 ---- */
+html:not(.dark) body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ---- 浅色模式 Tailwind 色板覆盖 ---- */
+html:not(.dark) .bg-base-900 { background-color: var(--bg-primary) !important; }
+html:not(.dark) .bg-base-800 { background-color: var(--bg-secondary) !important; }
+html:not(.dark) .bg-base-800\/50 { background-color: rgba(255, 255, 255, 0.6) !important; }
+html:not(.dark) .bg-base-800\/30 { background-color: rgba(255, 255, 255, 0.4) !important; }
+html:not(.dark) .bg-base-700 { background-color: var(--bg-tertiary) !important; }
+html:not(.dark) .bg-base-700\/50 { background-color: rgba(240, 243, 246, 0.6) !important; }
+html:not(.dark) .bg-base-700\/30 { background-color: rgba(240, 243, 246, 0.4) !important; }
+
+html:not(.dark) .border-base-700 { border-color: var(--border-default) !important; }
+html:not(.dark) .border-base-700\/50 { border-color: rgba(208, 215, 222, 0.5) !important; }
+html:not(.dark) .border-base-600 { border-color: var(--border-default) !important; }
+html:not(.dark) .border-base-800 { border-color: var(--border-muted) !important; }
+html:not(.dark) .border-base-800\/50 { border-color: rgba(232, 236, 240, 0.5) !important; }
+
+html:not(.dark) .text-base-50 { color: var(--text-primary) !important; }
+html:not(.dark) .text-base-100 { color: var(--text-primary) !important; }
+html:not(.dark) .text-base-200 { color: #1E293B !important; }
+html:not(.dark) .text-base-300 { color: var(--text-secondary) !important; }
+html:not(.dark) .text-base-400 { color: var(--text-secondary) !important; }
+html:not(.dark) .text-base-500 { color: var(--text-tertiary) !important; }
+html:not(.dark) .text-base-600 { color: var(--text-secondary) !important; }
+html:not(.dark) .text-base-700 { color: var(--text-secondary) !important; }
+html:not(.dark) .text-white { color: var(--text-primary) !important; }
+
+html:not(.dark) .hover\:bg-base-700\/50:hover { background-color: rgba(234, 238, 242, 0.6) !important; }
+html:not(.dark) .hover\:bg-base-700:hover { background-color: var(--bg-hover) !important; }
+html:not(.dark) .hover\:bg-base-800\/30:hover { background-color: rgba(255, 255, 255, 0.4) !important; }
+html:not(.dark) .hover\:bg-base-800:hover { background-color: var(--bg-hover) !important; }
+
+#root { position: relative; z-index: 1; }
+
+/* ---- 玻璃态卡片 ---- */
 .glass {
-  background: rgba(22, 30, 46, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(100, 116, 139, 0.15);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 导航色调(靛蓝) */
 .glass-nav {
-  background: rgba(30, 27, 75, 0.4);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(13, 17, 23, 0.9);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 主操作色调(蓝) */
 .glass-action {
-  background: rgba(30, 58, 138, 0.3);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(59, 130, 246, 0.15);
+  background: rgba(22, 27, 34, 0.6);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 正向色调(翠绿) */
 .glass-pos {
-  background: rgba(6, 78, 59, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 警告色调(琥珀) */
 .glass-warn {
-  background: rgba(120, 53, 15, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(245, 158, 11, 0.15);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 危险色调(玫瑰红) */
 .glass-neg {
-  background: rgba(136, 19, 55, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(244, 63, 94, 0.15);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 玻璃态卡片 — 信息色调(青色) */
 .glass-info {
-  background: rgba(8, 47, 73, 0.3);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: rgba(22, 27, 34, 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--border-default);
 }
 
-/* 浅色模式玻璃态 */
-.light .glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+html:not(.dark) .glass,
+html:not(.dark) .glass-action,
+html:not(.dark) .glass-pos,
+html:not(.dark) .glass-warn,
+html:not(.dark) .glass-neg,
+html:not(.dark) .glass-info {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border-default);
+}
+html:not(.dark) .glass-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--border-default);
 }
 
-/* 渐变文字效果 */
+/* ---- 渐变文字 ---- */
 .gradient-text {
-  background: linear-gradient(135deg, #6366F1, #06B6D4, #10B981);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* 发光按钮 — 带光晕效果的主按钮 */
+/* ---- 发光主按钮 ---- */
 .glow-btn {
-  background: linear-gradient(135deg, #3B82F6, #6366F1);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 4px 16px rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, var(--accent-primary), #04B888);
+  box-shadow: 0 2px 8px rgba(6, 214, 160, 0.15), 0 4px 16px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
 .glow-btn:hover {
-  box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 6px 24px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(6, 214, 160, 0.25), 0 4px 14px rgba(6, 214, 160, 0.2);
   transform: translateY(-1px);
 }
 
-/* ACMG 五级分类渐变色 — 从红到蓝 */
-.acmg-pathogenic { background: linear-gradient(135deg, #F43F5E, #E11D48); }
-.acmg-likely-pathogenic { background: linear-gradient(135deg, #F97316, #EA580C); }
-.acmg-vus { background: linear-gradient(135deg, #F59E0B, #D97706); }
-.acmg-likely-benign { background: linear-gradient(135deg, #10B981, #059669); }
-.acmg-benign { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+/* ---- ACMG 五级分类渐变（组件用） ---- */
+.acmg-pathogenic { background: linear-gradient(135deg, #FF6B6B, #E05555); }
+.acmg-likely-pathogenic { background: linear-gradient(135deg, #FFB627, #E09C00); }
+.acmg-vus { background: linear-gradient(135deg, #7C8AFF, #5B6AE0); }
+.acmg-likely-benign { background: linear-gradient(135deg, #06D6A0, #04B888); }
+.acmg-benign { background: linear-gradient(135deg, #5B9CF6, #4A8AE6); }
 
-/* 自定义滚动条 */
+/* ---- 自定义滚动条 ---- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+html:not(.dark) ::-webkit-scrollbar-thumb { background: #D0D7DE; }
+html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #8C959F; }
